@@ -21,6 +21,10 @@ wheels/
 *.egg
 MANIFEST
 
+# Exclude all Python files except app.py
+*.py
+!app.py
+
 # Virtual Environment (exclude for deployment)
 venv/
 env/
