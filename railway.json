@@ -13,9 +13,18 @@
   "environments": {
     "production": {
       "variables": {
+        "DEBUG": "False",
+        "DEFAULT_MODEL": "openai/gpt-3.5-turbo",
         "FLASK_ENV": "production",
         "HOST": "0.0.0.0",
-        "DEBUG": "false"
+        "MAPBOX_ACCESS_TOKEN": "${{MAPBOX_ACCESS_TOKEN}}",
+        "MAX_CONTENT_LENGTH": "16777216",
+        "OPENROUTER_BASE_URL": "https://openrouter.ai/api/v1",
+        "PORT": "${{PORT}}",
+        "SECRET_KEY": "${{SECRET_KEY}}",
+        "SESSION_TIMEOUT_MINUTES": "30",
+        "SUPABASE_ANON_KEY": "${{SUPABASE_ANON_KEY}}",
+        "SUPABASE_SERVICE_ROLE_KEY": "${{SUPABASE_SERVICE_ROLE_KEY}}"
       }
     }
   }

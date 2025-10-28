@@ -30,7 +30,20 @@ app.config.from_object(config_class)
 
 # Configure CORS with environment-specific origins
 CORS(app, origins=app.config['CORS_ORIGINS'])
-socketio = SocketIO(app, cors_allowed_origins=app.config['CORS_ORIGINS'])
+
+# Configure Socket.IO with production-friendly settings
+socketio_cors_origins = app.config['CORS_ORIGINS']
+if os.environ.get('FLASK_ENV') == 'production':
+    # For Railway deployment, allow the specific domain
+    socketio_cors_origins = ["https://sam-un.up.railway.app", "https://*.railway.app"]
+
+socketio = SocketIO(
+    app, 
+    cors_allowed_origins=socketio_cors_origins,
+    logger=True,
+    engineio_logger=True,
+    async_mode='threading'
+)
 
 # Session activity tracking middleware
 @app.before_request
