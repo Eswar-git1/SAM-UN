@@ -21,9 +21,13 @@ wheels/
 *.egg
 MANIFEST
 
-# Exclude all Python files except app.py
+# Exclude all Python files except essential ones
 *.py
 !app.py
+!config.py
+!chatbot.py
+!supabase_client.py
+!llm_client.py
 
 # Exclude SQL and JSON files (not needed for deployment)
 *.sql
