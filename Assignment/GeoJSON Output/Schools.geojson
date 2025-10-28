@@ -1,0 +1,12 @@
+{
+  "type": "FeatureCollection",
+  "name": "Schools",
+  "features": [
+    { "type": "Feature", "properties": { "name": "Primary School A", "students": 400 }, "geometry": { "type": "Point", "coordinates": [19.1, -3.4] } },
+    { "type": "Feature", "properties": { "name": "Secondary School B", "students": 600 }, "geometry": { "type": "Point", "coordinates": [23.7, -2.8] } },
+    { "type": "Feature", "properties": { "name": "High School C", "students": 520 }, "geometry": { "type": "Point", "coordinates": [27.9, -6.3] } },
+    { "type": "Feature", "properties": { "name": "Primary School D", "students": 350 }, "geometry": { "type": "Point", "coordinates": [15.0, -1.1] } },
+    { "type": "Feature", "properties": { "name": "Secondary School E", "students": 480 }, "geometry": { "type": "Point", "coordinates": [29.2, -5.5] } },
+    { "type": "Feature", "properties": { "name": "Vocational Institute F", "students": 260 }, "geometry": { "type": "Point", "coordinates": [16.8, -4.6] } }
+  ]
+}

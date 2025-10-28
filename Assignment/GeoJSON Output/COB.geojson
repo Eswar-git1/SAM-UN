@@ -1,0 +1,16 @@
+{
+  "type": "FeatureCollection",
+  "name": "COB",
+  "features": [
+    {"type": "Feature","properties": {"name": "COB Alpha","capacity": 250,"status": "operational","population": 30000},"geometry": {"type": "Point","coordinates": [16.0,-1.0]}},
+    {"type": "Feature","properties": {"name": "COB Bravo","capacity": 300,"status": "operational","population": 35000},"geometry": {"type": "Point","coordinates": [17.0,1.0]}},
+    {"type": "Feature","properties": {"name": "COB Charlie","capacity": 200,"status": "standby","population": 20000},"geometry": {"type": "Point","coordinates": [18.0,0.0]}},
+    {"type": "Feature","properties": {"name": "COB Delta","capacity": 220,"status": "operational","population": 28000},"geometry": {"type": "Point","coordinates": [19.0,-1.5]}},
+    {"type": "Feature","properties": {"name": "COB Echo","capacity": 320,"status": "operational","population": 40000},"geometry": {"type": "Point","coordinates": [20.0,1.5]}},
+    {"type": "Feature","properties": {"name": "COB Foxtrot","capacity": 180,"status": "standby","population": 18000},"geometry": {"type": "Point","coordinates": [21.0,0.8]}},
+    {"type": "Feature","properties": {"name": "COB Golf","capacity": 150,"status": "standby","population": 15000},"geometry": {"type": "Point","coordinates": [22.0,-0.7]}},
+    {"type": "Feature","properties": {"name": "COB Hotel","capacity": 260,"status": "operational","population": 36000},"geometry": {"type": "Point","coordinates": [23.0,1.2]}},
+    {"type": "Feature","properties": {"name": "COB India","capacity": 210,"status": "standby","population": 22000},"geometry": {"type": "Point","coordinates": [24.0,-1.2]}},
+    {"type": "Feature","properties": {"name": "COB Juliet","capacity": 240,"status": "operational","population": 25000},"geometry": {"type": "Point","coordinates": [25.0,0.3]}}
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "type": "FeatureCollection",
+  "name": "BNs & Force",
+  "features": [
+    {"type": "Feature","properties": {"name": "Bn 1 HQ","unit": "Bn 1","status": "active","population": 80000},"geometry": {"type": "Point","coordinates": [16.0,1.0]}},
+    {"type": "Feature","properties": {"name": "Bn 2 Company","unit": "Bn 2","status": "active","population": 120000},"geometry": {"type": "Point","coordinates": [17.0,0.5]}},
+    {"type": "Feature","properties": {"name": "Bn 3 Company","unit": "Bn 3","status": "reserve","population": 60000},"geometry": {"type": "Point","coordinates": [18.0,2.0]}},
+    {"type": "Feature","properties": {"name": "Bn 4 HQ","unit": "Bn 4","status": "active","population": 150000},"geometry": {"type": "Point","coordinates": [19.0,1.5]}},
+    {"type": "Feature","properties": {"name": "Bn 5 Platoon","unit": "Bn 5","status": "active","population": 90000},"geometry": {"type": "Point","coordinates": [20.0,0.0]}},
+    {"type": "Feature","properties": {"name": "Bn 6 Platoon","unit": "Bn 6","status": "reserve","population": 110000},"geometry": {"type": "Point","coordinates": [21.0,2.5]}},
+    {"type": "Feature","properties": {"name": "Bn 7 Company","unit": "Bn 7","status": "active","population": 70000},"geometry": {"type": "Point","coordinates": [22.0,1.0]}},
+    {"type": "Feature","properties": {"name": "Bn 8 Detachment","unit": "Bn 8","status": "active","population": 130000},"geometry": {"type": "Point","coordinates": [24.0,0.5]}},
+    {"type": "Feature","properties": {"name": "Bn 9 Detachment","unit": "Bn 9","status": "reserve","population": 140000},"geometry": {"type": "Point","coordinates": [25.0,2.0]}},
+    {"type": "Feature","properties": {"name": "Bn 10 Company","unit": "Bn 10","status": "active","population": 100000},"geometry": {"type": "Point","coordinates": [26.0,1.0]}}
+  ]
+}

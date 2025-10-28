@@ -1,0 +1,63 @@
+{
+  "type": "FeatureCollection",
+  "name": "Rebel Cont Area",
+  "crs": { "type": "name", "properties": { "name": "EPSG:4326" } },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "name": "Rebel Area West (COB Alpha)", "status": "volatile", "notes": "Irregular pocket near COB Alpha at 16E, -1" },
+      "geometry": { "type": "Polygon", "coordinates": [[
+        [15.78, -1.22], [15.90, -1.30], [16.10, -1.28], [16.28, -1.12], [16.30, -0.92],
+        [16.22, -0.75], [16.05, -0.68], [15.88, -0.78], [15.78, -0.95], [15.78, -1.22]
+      ]] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Rebel Area Central (COB Charlie)", "status": "volatile", "notes": "Curved wedge near COB Charlie at 18E, 0" },
+      "geometry": { "type": "Polygon", "coordinates": [[
+        [17.78, -0.22], [17.90, -0.30], [18.10, -0.28], [18.28, -0.12], [18.32, 0.08],
+        [18.24, 0.26], [18.06, 0.34], [17.88, 0.24], [17.78, 0.04], [17.78, -0.22]
+      ]] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Rebel Area NE (COB Echo)", "status": "volatile", "notes": "Corridor near COB Echo at 20E, 1.5N" },
+      "geometry": { "type": "Polygon", "coordinates": [[
+        [19.78, 1.30], [19.92, 1.22], [20.12, 1.26], [20.28, 1.42], [20.32, 1.62],
+        [20.24, 1.80], [20.06, 1.88], [19.88, 1.78], [19.78, 1.58], [19.78, 1.30]
+      ]] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Rebel Area East (COB Foxtrot)", "status": "volatile", "notes": "Arc pocket near COB Foxtrot at 21E, 0.8N" },
+      "geometry": { "type": "Polygon", "coordinates": [[
+        [20.78, 0.58], [20.92, 0.50], [21.12, 0.54], [21.28, 0.70], [21.32, 0.90],
+        [21.24, 1.08], [21.06, 1.16], [20.88, 1.06], [20.78, 0.86], [20.78, 0.58]
+      ]] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Rebel Area Far East (COB Hotel)", "status": "volatile", "notes": "Lens near COB Hotel at 23E, 1.2N" },
+      "geometry": { "type": "Polygon", "coordinates": [[
+        [22.78, 1.00], [22.92, 0.92], [23.12, 0.98], [23.30, 1.14], [23.34, 1.34],
+        [23.26, 1.52], [23.08, 1.60], [22.90, 1.50], [22.78, 1.30], [22.78, 1.00]
+      ]] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Rebel Area SE (COB India)", "status": "volatile", "notes": "Comma pocket near COB India at 24E, -1.2" },
+      "geometry": { "type": "Polygon", "coordinates": [[
+        [23.78, -1.42], [23.90, -1.50], [24.10, -1.46], [24.28, -1.30], [24.32, -1.10],
+        [24.24, -0.92], [24.06, -0.84], [23.88, -0.94], [23.78, -1.14], [23.78, -1.42]
+      ]] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Rebel Area East Edge (COB Juliet)", "status": "volatile", "notes": "Irregular near COB Juliet at 25E, 0.3N" },
+      "geometry": { "type": "Polygon", "coordinates": [[
+        [24.78, 0.08], [24.92, 0.00], [25.12, 0.04], [25.30, 0.20], [25.34, 0.40],
+        [25.26, 0.58], [25.08, 0.66], [24.90, 0.56], [24.78, 0.36], [24.78, 0.08]
+      ]] }
+    }
+  ]
+}

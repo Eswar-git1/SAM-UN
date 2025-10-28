@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SAM UN</title>
+
+  <!-- Local Fonts & Icons -->
+  <!-- Google Fonts removed: using local Roboto/Poppins/Exo in /static/fonts -->
+  <link rel="stylesheet" href="/static/css/fontawesome.min.css" />
+  <link rel="stylesheet" href="/static/css/all.min.css" />
+
+  <!-- Leaflet & Draw CSS from CDN -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
+  <!-- Leaflet.Browser.Print has no required CSS; removed CDN -->
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/static/css/styles.css" />
+  <link rel="stylesheet" href="/static/css/chatbot.css" />
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="main-header">
+    <div class="banner-content">
+      <img class="banner-logo" src="/static/images/UN logo.png" alt="UN Logo" />
+      <div class="banner-text">
+        <h1 class="banner-title">SAM UN</h1>
+        <!-- Sub heading added below main title -->
+        <div class="banner-subtitle">Situational Awareness Module for United Nations</div>
+      </div>
+    </div>
+    <!-- Primary Toolbar -->
+    <nav class="toolbar">
+      <a class="toolbar-btn" id="dashboard-btn" href="/dashboard">
+        <i class="fa-solid fa-chart-line"></i> Dashboard
+      </a>
+      <button class="toolbar-btn" id="convert-btn">
+        <i class="fa-solid fa-file-convert"></i> Convert to GeoJSON
+      </button>
+      <button class="toolbar-btn" id="measure-btn">
+        <i class="fa-solid fa-ruler-combined"></i> Measure
+      </button>
+      <button class="toolbar-btn" id="clear-btn">
+        <i class="fa-solid fa-rotate-right"></i> Clear
+      </button>
+    </nav>
+  </header>
+
+  <!-- Secondary Toolbar for Editing -->
+  <div class="toolbar editing-toolbar">
+    <button class="toolbar-btn" id="tool-point">
+      <i class="fa-solid fa-map-pin"></i> Point
+    </button>
+    <button class="toolbar-btn" id="tool-line">
+      <i class="fa-solid fa-route"></i> Line
+    </button>
+    <button class="toolbar-btn" id="tool-polygon">
+      <i class="fa-solid fa-draw-polygon"></i> Polygon
+    </button>
+    <button class="toolbar-btn" id="tool-modify">
+      <i class="fa-solid fa-edit"></i> Modify
+    </button>
+    <button id="finish-modify" class="toolbar-btn">
+      <i class="fa-solid fa-check"></i> Finish Modify
+    </button>
+    <button class="toolbar-btn" id="tool-delete">
+      <i class="fa-solid fa-trash"></i> Delete
+    </button>
+    <button class="toolbar-btn" id="tool-undo">
+      <i class="fa-solid fa-rotate-left"></i> Undo
+    </button>
+    <button class="toolbar-btn" id="tool-redo">
+      <i class="fa-solid fa-rotate-right"></i> Redo
+    </button>
+    <button class="toolbar-btn" id="tool-snapping">
+      <i class="fa-solid fa-magnet"></i> Snap
+    </button>
+    <!-- Sub-header: SITREP Visualisation Controls (moved here) -->
+    <div class="subheader-filters" id="subheader-visualisation">
+      <label for="sitrep-range" class="inline-label">Quick Range</label>
+      <select id="sitrep-range">
+        <option value="">All</option>
+        <option value="1">Last 1 day</option>
+        <option value="7">Last 7 days</option>
+        <option value="30">Last 30 days</option>
+        <option value="90">Last 90 days</option>
+      </select>
+      <label for="sitrep-from-date" class="inline-label">From</label>
+      <input type="date" id="sitrep-from-date" />
+      <label for="sitrep-to-date" class="inline-label">To</label>
+      <input type="date" id="sitrep-to-date" />
+      <button id="sitrep-filter-apply" class="toolbar-btn">
+        <i class="fa-solid fa-filter"></i> Apply
+      </button>
+      <button id="sitrep-filter-reset" class="toolbar-btn">
+        <i class="fa-solid fa-rotate"></i> Reset
+      </button>
+      <div class="heatmap-controls">
+        <button id="heatmap-toggle" class="toolbar-btn">
+          <i class="fa-solid fa-fire"></i> Toggle Heat Map
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT: Left Panel, Map, Right Panel -->
+  <div class="main-content">
+    <!-- LEFT PANEL -->
+    <aside class="left-panel">
+      <!-- Tabs for Left Panel -->
+      <div class="tabs">
+        <button class="tab-button active" data-tab="layers-tab">Layers</button>
+        <button class="tab-button" data-tab="data-tab">Data Tools</button>
+      </div>
+
+      <!-- ======== LAYERS TAB ======== -->
+      <div id="layers-tab" class="tab-content active">
+        <h2>Table of Contents</h2>
+        
+        <!-- User Layers Section -->
+        <div class="user-layers-section">
+          <h3>User Layers</h3>
+          <ul id="user-layer-list">
+            <!-- User-created and exported layers will appear here -->
+          </ul>
+        </div>
+        
+        <!-- System Layers Section -->
+        <div class="system-layers-section">
+          <h3>System Layers</h3>
+          <div class="scroll-box">
+            <input type="text" id="layer-search" placeholder="Search layers..." />
+            <ul id="layer-list"></ul>
+          </div>
+        </div>
+
+        <!-- Import Layer Shortcut moved here -->
+        <section id="import-layers-shortcut">
+          <h3>Import Layer</h3>
+          <p>
+            <span class="small-hint">Load local MBTiles, GeoTIFF, GeoPackage, GeoJSON, or PBF.</span>
+          </p>
+          <button id="open-import-layer-modal" class="search-btn">
+            <i class="fa-solid fa-upload"></i> Open Import Form
+          </button>
+        </section>
+
+        <!-- KML/KMZ File Loader -->
+        <section id="kml-loader" style="display: none;">
+          <h3>KML/KMZ File Loader</h3>
+          <input type="file" id="kml-file-input" accept=".kml,.kmz" />
+          <button id="load-kml-btn" class="search-btn">
+            <i class="fa-solid fa-upload"></i> Upload
+          </button>
+          <p id="kml-status"></p>
+        </section>
+
+        <!-- Queries Content Moved Here -->
+        <section id="queries-section" style="display: none;">
+          <h2>Attribute Query</h2>
+          <select id="query-layer-select">
+            <option value="">-- Select Layer --</option>
+          </select>
+          <select id="query-attribute-select">
+            <option value="">-- Select Attribute --</option>
+          </select>
+          <select id="query-operator">
+            <option value="=">=</option>
+            <option value=">">></option>
+            <option value="<"><</option>
+            <option value="contains">Contains</option>
+          </select>
+          <input type="text" id="query-value" placeholder="Value" />
+          <button id="query-btn" class="search-btn">
+            <i class="fa-solid fa-database"></i> Query
+          </button>
+          <button id="view-attributes-btn" class="search-btn">
+            <i class="fa-solid fa-list"></i> View Attributes
+          </button>
+          <button id="apply-thematic-btn" class="search-btn">
+            Apply Thematic
+          </button>
+        </section>
+      </div>
+
+      <!-- ==================== DATA TOOLS TAB (Left Panel) ==================== -->
+      <div id="data-tab" class="tab-content">
+        <h2>Data Tools</h2>
+
+        <!-- Daily SITREP trigger (modal) -->
+        <section id="sitreps-section">
+          <h3>Daily SITREP</h3>
+          <button id="open-sitrep-modal" class="search-btn">
+            <i class="fa-solid fa-plus"></i> Open SITREP Form
+          </button>
+          <div id="sitrep-status" class="small-hint"></div>
+
+          <!-- SITREP Filters moved to sub-header -->
+        </section>
+        <hr />
+
+        <!-- Air Support Demand trigger (modal) -->
+        <section id="airsp-section">
+          <h3>Air Support Demand</h3>
+          <button id="open-airsp-modal" class="search-btn">
+            <i class="fa-solid fa-helicopter"></i> Open Air Support Demand Form
+          </button>
+          <div id="airsp-status" class="small-hint"></div>
+        </section>
+        <hr />
+
+
+        <!-- 2) Create New Layer (Advanced) -->
+        <section id="advanced-vector-layer-tools">
+          <h3>Create New Layer</h3>
+          <!-- Button to open the advanced creation wizard (modal) -->
+          <button id="open-advanced-layer-modal" class="search-btn">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Create New Layer
+          </button>
+        </section>
+        <hr />
+
+
+
+        <!-- 4) Layer Management Panel -->
+        <section id="layer-management-panel">
+          <h3>Layer Management</h3>
+          <ul id="layer-list-management">
+            <!-- JS populates this list -->
+          </ul>
+          <button id="export-zip-btn" class="search-btn">
+            <i class="fa-solid fa-save"></i> Save as User Layers
+          </button>
+        </section>
+      </div>
+    </aside>
+
+    <!-- MAP CONTAINER (CENTER) -->
+    <div class="map-container">
+      <div id="map"></div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <aside class="right-panel">
+      <!-- Tabs for Right Panel -->
+      <div class="tabs">
+        <button class="tab-button active" data-tab="basemaps-tab">Basemaps</button>
+        <button class="tab-button" data-tab="directions-tab">Directions</button>
+        <button class="tab-button" data-tab="info-tab">Info</button>
+      </div>
+
+      <!-- ======== BASEMAPS TAB ======== -->
+      <div id="basemaps-tab" class="tab-content active">
+        <h3>Base Maps (Fast-Loading)</h3>
+        <ul>
+          <li data-basemap="osm">OpenStreetMap</li>
+          <li data-basemap="esri-aerial">ESRI Aerial</li>
+          <li data-basemap="esri-street">ESRI Street</li>
+          <li data-basemap="esri-topo">ESRI Topo</li>
+          <li data-basemap="none">No Base Map</li>
+        </ul>
+      </div>
+
+      <!-- ======== DIRECTIONS TAB ======== -->
+      <div id="directions-tab" class="tab-content">
+        <h3>Directions (Offline)</h3>
+        <p class="small-hint">Uses straight-line routing for offline functionality</p>
+        <label for="start-latlng">Start Place:</label>
+        <input type="text" id="start-latlng" placeholder="Enter place in DRC" />
+        <div id="start-suggestions" class="suggestions-list"></div>
+        <label for="end-latlng">End Place:</label>
+        <input type="text" id="end-latlng" placeholder="Enter place in DRC" />
+        <div id="end-suggestions" class="suggestions-list"></div>
+        <button id="route-btn">Calculate Route</button>
+        <!-- New: Offline routing assist -->
+        <div class="inline-toggle" style="margin-top:8px;">
+          <input type="checkbox" id="avoid-disruptions" />
+          <label for="avoid-disruptions">Avoid disruptions</label>
+          <div class="small-hint">Tip: For offline routing, enter coordinates as "lat,lon" (e.g., -4.0,21.8)</div>
+        </div>
+        <h4 style="margin-top: 15px;">Geocode Locator</h4>
+        <input type="text" id="search" placeholder="Search for a place" />
+        <button id="search-btn" class="search-btn">
+          <i class="fa-solid fa-magnifying-glass"></i> Search
+        </button>
+        <div id="start-suggestions" class="suggestions-list"></div>
+        <div id="end-suggestions" class="suggestions-list"></div>
+
+        <h4 style="margin-top: 15px;">Coordinate Search</h4>
+        <div id="coordinate-search">
+          <label for="latitude">Lat:</label>
+          <input type="number" step="any" id="latitude" placeholder="34.05" />
+          <label for="longitude">Lon:</label>
+          <input type="number" step="any" id="longitude" placeholder="-117.29" />
+          <button id="go-coordinates-btn" class="search-btn">
+            <i class="fa-solid fa-location-arrow"></i> Go
+          </button>
+        </div>
+      </div>
+
+
+      <!-- ======== INFO TAB ======== -->
+      <div id="info-tab" class="tab-content">
+        <h3>Feature Info</h3>
+        <p>Click on a feature in the map to see its attributes.</p>
+        <div id="info-content">No feature selected.</div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- FOOTER / STATUS BAR -->
+  <footer class="status-bar">
+    <span id="coord-text" class="coordinate-display">Lat: ---, Lng: ---</span>
+  </footer>
+
+  <!-- Modal for Uploading/Converting Files -->
+  <div id="convert-modal" style="display: none;">
+    <h3>Convert File to GeoJSON</h3>
+    <form id="convert-form" enctype="multipart/form-data">
+      <label for="convert-file">Upload a File (GeoPackage, Shapefile, CSV):</label>
+      <input type="file" id="convert-file" name="file" accept=".gpkg,.shp,.csv" />
+      <button type="submit">Convert</button>
+    </form>
+  </div>
+
+  <!-- Floating Measurement Toolbox -->
+  <div class="measure-toolbox" id="measure-tool">
+    <button id="draw-line-btn" title="Draw Line">
+      <i class="fa-solid fa-pen-ruler"></i> Line
+    </button>
+    <button id="draw-polygon-btn" title="Draw Polygon">
+      <i class="fa-solid fa-draw-polygon"></i> Polygon
+    </button>
+    <button id="delete-shapes-btn" title="Delete all shapes">
+      <i class="fa-solid fa-trash"></i> Delete
+    </button>
+  </div>
+
+  <!-- Floating Info Panel -->
+  <div class="info-panel" id="info-panel">
+    <h3>Feature Info</h3>
+    <span class="close-info-panel" title="Close">&times;</span>
+    <div id="info-content-panel">Click a feature to see details here.</div>
+  </div>
+
+  <!-- Place modals and context menu here, near end of body -->
+  <!-- Advanced Create Layer Modal -->
+  <div id="advanced-layer-modal" class="modal" style="display: none;">
+    <h2>Create New Layer (Advanced)</h2>
+    <p>
+      Define the layer name, geometry type, and attribute fields below.
+    </p>
+
+    <label for="advanced-layer-name">Layer Name:</label>
+    <input type="text" id="advanced-layer-name" placeholder="Enter layer name" />
+
+    <label for="advanced-geom-type">Geometry Type:</label>
+    <select id="advanced-geom-type">
+      <option value="Point">Point</option>
+      <option value="LineString">Line</option>
+      <option value="Polygon">Polygon</option>
+    </select>
+
+    <h4>New Field</h4>
+    <label for="advanced-field-name">Field Name:</label>
+    <input type="text" id="advanced-field-name" placeholder="e.g. Name" />
+
+    <label for="advanced-field-type">Type:</label>
+    <select id="advanced-field-type">
+      <option value="string">String</option>
+      <option value="integer">Integer</option>
+      <option value="float">Float</option>
+    </select>
+
+    <button id="advanced-add-field" class="search-btn">
+      <i class="fa-solid fa-plus"></i> Add Field
+    </button>
+
+    <h4>Fields List</h4>
+    <table id="advanced-fields-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- JS appends rows here -->
+      </tbody>
+    </table>
+
+    <br />
+    <button id="advanced-create-layer" class="search-btn">
+      <i class="fa-solid fa-check"></i> Create
+    </button>
+    <button id="close-advanced-layer-modal" class="search-btn">
+      <i class="fa-solid fa-times"></i> Cancel
+    </button>
+  </div>
+
+  <!-- Feature Attributes Modal -->
+  <div id="feature-attribute-modal" style="display: none;">
+    <h2>Enter Feature Attributes</h2>
+    <p>Fill out the fields below for this new feature:</p>
+    <div id="feature-attr-form"></div>
+
+    <button id="feature-attr-save-btn" class="search-btn">
+      Save
+    </button>
+    <button id="feature-attr-cancel-btn" class="search-btn">
+      Cancel
+    </button>
+  </div>
+
+  <!-- Custom Context Menu -->
+  <div id="layer-context-menu" class="context-menu" style="display: none;">
+    <ul>
+      <li data-action="attr-table">Open Attribute Table</li>
+      <li data-action="edit-style">Edit Style</li>
+      <li data-action="export">Save as User Layer</li>
+      <li data-action="bring-front">Bring to Front</li>
+    </ul>
+  </div>
+
+  <!-- SITREP Modal -->
+  <div id="sitrep-modal" style="display: none;">
+    <h2>Daily SITREP</h2>
+    <div class="form-grid">
+      <label for="sitrep-source-category">Source Category</label>
+      <select id="sitrep-source-category">
+        <option value="">Select...</option>
+        <option value="own">Own</option>
+        <option value="local">Local</option>
+        <option value="rebel">Rebel</option>
+        <option value="ngo">NGO</option>
+        <option value="other">Other</option>
+      </select>
+
+      <label for="sitrep-source">Source</label>
+      <input type="text" id="sitrep-source" placeholder="e.g., Local Govt / Unit name" />
+
+      <label for="sitrep-title">Title</label>
+      <input type="text" id="sitrep-title" placeholder="Brief title" />
+
+      <label for="sitrep-status">Status</label>
+      <select id="sitrep-status-field">
+        <option value="reported">Reported</option>
+        <option value="confirmed">Confirmed</option>
+        <option value="ongoing">Ongoing</option>
+        <option value="resolved">Resolved</option>
+      </select>
+
+      <label for="sitrep-unit">Unit/Team</label>
+      <input type="text" id="sitrep-unit" placeholder="e.g., 2nd Battalion, UN Team" />
+
+      <label for="sitrep-contact">POC/Contact</label>
+      <input type="text" id="sitrep-contact" placeholder="Name / phone / radio" />
+
+      <label for="sitrep-severity">Severity</label>
+      <select id="sitrep-severity">
+        <option value="low">Low</option>
+        <option value="moderate">Moderate</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+        <option value="critical">Critical</option>
+      </select>
+
+      <label for="sitrep-lat">Latitude</label>
+      <input type="number" step="any" id="sitrep-lat" placeholder="Lat" />
+
+      <label for="sitrep-lon">Longitude</label>
+      <input type="number" step="any" id="sitrep-lon" placeholder="Lon" />
+
+      <label for="sitrep-desc">Description</label>
+      <textarea id="sitrep-desc" rows="4" placeholder="Describe the situation..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button id="sitrep-submit" class="search-btn"><i class="fa-solid fa-paper-plane"></i> Submit</button>
+      <button id="close-sitrep-modal" class="search-btn"><i class="fa-solid fa-times"></i> Close</button>
+    </div>
+  </div>
+
+  <!-- Air Support Demand Modal -->
+  <div id="airsp-modal" style="display: none;">
+    <h2>Air Support Demand</h2>
+    <div class="form-grid">
+      <label for="airsp-category">Category</label>
+      <select id="airsp-category">
+        <option value="routine">Routine</option>
+        <option value="sos">SoS</option>
+      </select>
+
+      <label for="airsp-requester">Requester</label>
+      <input type="text" id="airsp-requester" placeholder="Unit / Agency" />
+
+      <label for="airsp-title">Title</label>
+      <input type="text" id="airsp-title" placeholder="Brief description" />
+
+      <label for="airsp-lat">Latitude</label>
+      <input type="number" step="any" id="airsp-lat" placeholder="Lat" />
+
+      <label for="airsp-lon">Longitude</label>
+      <input type="number" step="any" id="airsp-lon" placeholder="Lon" />
+
+      <label for="airsp-desc">Details</label>
+      <textarea id="airsp-desc" rows="4" placeholder="Purpose, timing, constraints..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button id="airsp-submit" class="search-btn"><i class="fa-solid fa-paper-plane"></i> Submit</button>
+      <button id="close-airsp-modal" class="search-btn"><i class="fa-solid fa-times"></i> Close</button>
+    </div>
+  </div>
+
+  <!-- Import Layer Modal -->
+  <div id="import-layer-modal" style="display: none;">
+    <h2>Import Layer</h2>
+    <p class="small-hint">Supported: MBTiles, GeoTIFF, GeoPackage, GeoJSON, PBF.</p>
+    <div class="form-grid">
+      <label for="import-layer-file">Choose File</label>
+      <input type="file" id="import-layer-file" accept=".mbtiles,.tif,.tiff,.gpkg,.geojson,.json,.pbf" />
+    </div>
+    <div class="modal-actions">
+      <button id="import-layer-btn" class="search-btn"><i class="fa-solid fa-upload"></i> Import</button>
+      <button id="close-import-layer-modal" class="search-btn"><i class="fa-solid fa-times"></i> Close</button>
+    </div>
+  </div>
+
+  <!-- Keep overlay element -->
+  <div id="modal-overlay"></div>
+
+  <!-- Chatbot Widget -->
+  <div class="chatbot-container">
+    <!-- Chatbot Toggle Button -->
+    <button class="chatbot-toggle" id="chatbot-toggle">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C6.48 2 2 6.48 2 12C2 13.54 2.36 14.99 3.01 16.28L2 22L7.72 20.99C9.01 21.64 10.46 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C10.74 20 9.54 19.75 8.46 19.3L8 19.11L4.91 19.91L5.71 16.82L5.52 16.36C5.07 15.28 4.82 14.08 4.82 12.82C4.82 7.58 8.58 3.82 13.82 3.82C16.39 3.82 18.77 4.82 20.54 6.59C22.31 8.36 23.31 10.74 23.31 13.31C23.31 18.55 19.55 22.31 14.31 22.31H12V20Z" fill="currentColor"/>
+        <circle cx="9" cy="12" r="1" fill="currentColor"/>
+        <circle cx="12" cy="12" r="1" fill="currentColor"/>
+        <circle cx="15" cy="12" r="1" fill="currentColor"/>
+      </svg>
+    </button>
+
+    <!-- Chatbot Window -->
+    <div class="chatbot-window" id="chatbot-window">
+      <!-- Header -->
+      <div class="chatbot-header">
+        <div class="chatbot-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12C2 13.54 2.36 14.99 3.01 16.28L2 22L7.72 20.99C9.01 21.64 10.46 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C10.74 20 9.54 19.75 8.46 19.3L8 19.11L4.91 19.91L5.71 16.82L5.52 16.36C5.07 15.28 4.82 14.08 4.82 12.82C4.82 7.58 8.58 3.82 13.82 3.82C16.39 3.82 18.77 4.82 20.54 6.59C22.31 8.36 23.31 10.74 23.31 13.31C23.31 18.55 19.55 22.31 14.31 22.31H12V20Z" fill="currentColor"/>
+          </svg>
+          SAM UN Assistant
+        </div>
+        <div class="chatbot-controls">
+          <button class="chatbot-refresh-btn" id="chatbot-refresh-btn" title="Refresh Chat">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4C7.58 4 4 7.58 4 12C4 16.42 7.58 20 12 20C15.73 20 18.84 17.45 19.73 14H17.65C16.83 16.33 14.61 18 12 18C8.69 18 6 15.31 6 12C6 8.69 8.69 6 12 6C13.66 6 15.14 6.69 16.22 7.78L13 11H20V4L17.65 6.35Z" fill="currentColor"/>
+            </svg>
+          </button>
+          <button class="chatbot-shuffle-btn" id="chatbot-shuffle-btn" title="Shuffle Questions">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10.59 9.17L5.41 4L4 5.41L9.17 10.58L10.59 9.17ZM14.5 4L16.54 6.04L4 18.59L5.41 20L17.96 7.46L20 9.5V4H14.5ZM14.83 13.41L13.42 14.82L16.54 17.96L14.5 20H20V14.5L17.96 16.54L14.83 13.41Z" fill="currentColor"/>
+            </svg>
+          </button>
+          <button class="chatbot-config-btn" id="chatbot-config-btn" title="Configure">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5A3.5 3.5 0 0 1 15.5 12A3.5 3.5 0 0 1 12 15.5M19.43 12.98C19.47 12.66 19.5 12.34 19.5 12C19.5 11.66 19.47 11.34 19.43 11.02L21.54 9.37C21.73 9.22 21.78 8.95 21.66 8.73L19.66 5.27C19.54 5.05 19.27 4.96 19.05 5.05L16.56 6.05C16.04 5.65 15.48 5.32 14.87 5.07L14.5 2.42C14.46 2.18 14.25 2 14 2H10C9.75 2 9.54 2.18 9.5 2.42L9.13 5.07C8.52 5.32 7.96 5.66 7.44 6.05L4.95 5.05C4.73 4.96 4.46 5.05 4.34 5.27L2.34 8.73C2.22 8.95 2.27 9.22 2.46 9.37L4.57 11.02C4.53 11.34 4.5 11.67 4.5 12C4.5 12.33 4.53 12.66 4.57 12.98L2.46 14.63C2.27 14.78 2.22 15.05 2.34 15.27L4.34 18.73C4.46 18.95 4.73 19.03 4.95 18.95L7.44 17.94C7.96 18.34 8.52 18.68 9.13 18.93L9.5 21.58C9.54 21.82 9.75 22 10 22H14C14.25 22 14.46 21.82 14.5 21.58L14.87 18.93C15.48 18.68 16.04 18.34 16.56 17.94L19.05 18.95C19.27 19.03 19.54 18.95 19.66 18.73L21.66 15.27C21.78 15.05 21.73 14.78 21.54 14.63L19.43 12.98Z" fill="currentColor"/>
+            </svg>
+          </button>
+          <button class="chatbot-minimize-btn" id="chatbot-minimize-btn" title="Minimize">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M19 13H5V11H19V13Z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div class="chatbot-messages" id="chatbot-messages">
+        <div class="message bot-message">
+          <div class="message-avatar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C6.48 2 2 6.48 2 12C2 13.54 2.36 14.99 3.01 16.28L2 22L7.72 20.99C9.01 21.64 10.46 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" fill="currentColor"/>
+              <circle cx="9" cy="12" r="1" fill="white"/>
+              <circle cx="12" cy="12" r="1" fill="white"/>
+              <circle cx="15" cy="12" r="1" fill="white"/>
+            </svg>
+          </div>
+          <div class="message-content">
+            Hello! I'm your SAM UN Assistant. I can help you with information about SITREPs, incidents, and activities. I can also plot locations on the map when relevant. How can I assist you today?
+          </div>
+        </div>
+      </div>
+
+      <!-- Input Area -->
+      <div class="chatbot-input-area">
+        <div class="chatbot-status">
+          <div class="status-indicator" id="status-indicator"></div>
+          <span id="status-text">Ready</span>
+        </div>
+        <div class="chatbot-input-container">
+          <input type="text" class="chatbot-input" id="chatbot-input" placeholder="Ask me about SITREPs, incidents, or activities...">
+          <button class="chatbot-send-btn" id="chatbot-send-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.01 21L23 12L2.01 3L2 10L17 12L2 14L2.01 21Z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chatbot Configuration Modal -->
+  <div class="chatbot-config-modal" id="chatbot-config-modal" style="display: none;">
+    <div class="chatbot-config-content">
+      <div class="chatbot-config-header">
+        <h3>Chatbot Configuration</h3>
+        <button class="chatbot-config-close" id="chatbot-config-close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="currentColor"/>
+          </svg>
+        </button>
+      </div>
+      <div class="chatbot-config-body">
+        <div class="config-group">
+          <label for="lm-studio-url">OpenRouter Base URL:</label>
+          <input type="text" id="lm-studio-url" value="https://openrouter.ai/api/v1" placeholder="https://openrouter.ai/api/v1">
+        </div>
+        <div class="config-group">
+          <label for="lm-studio-model">Model:</label>
+          <select id="lm-studio-model">
+            <option value="">Select a model...</option>
+          </select>
+          <button class="refresh-models-btn" id="refresh-models-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4C7.58 4 4 7.58 4 12C4 16.42 7.58 20 12 20C15.73 20 18.84 17.45 19.73 14H17.65C16.83 16.33 14.61 18 12 18C8.69 18 6 15.31 6 12C6 8.69 8.69 6 12 6C13.66 6 15.14 6.69 16.22 7.78L13 11H20V4L17.65 6.35Z" fill="currentColor"/>
+            </svg>
+            Refresh
+          </button>
+        </div>
+        <div class="config-actions">
+          <button class="config-btn" id="test-connection">Test Connection</button>
+          <button class="save-config-btn" id="save-config-btn">Save Configuration</button>
+          <span id="connection-status"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEAFLET & Dependencies from CDN -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+  <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+  <script src="https://unpkg.com/sql.js@0.3.2/js/sql.js"></script>
+  <script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://unpkg.com/pako@2.1.0/dist/pako.min.js"></script>
+  <script src="https://unpkg.com/leaflet.vectorgrid@1.3.0/dist/Leaflet.VectorGrid.bundled.js"></script>
+  <script src="https://unpkg.com/togeojson@0.16.0/togeojson.js"></script>
+  <script src="/static/js/Leaflet.TileLayer.MBTiles.js"></script>
+  <script src="https://unpkg.com/geotiff@2.1.3/dist-browser/geotiff.js"></script>
+  <script src="https://unpkg.com/georaster@1.6.0/dist/georaster.browser.bundle.min.js"></script>
+  <script src="https://unpkg.com/georaster-layer-for-leaflet@3.10.0/dist/georaster-layer-for-leaflet.min.js"></script>
+  <script src="https://unpkg.com/leaflet.browser.print@2.0.2/dist/leaflet.browser.print.min.js"></script>
+  <script src="https://unpkg.com/@ngageoint/geopackage@4.2.6/dist/geopackage.min.js"></script>
+  <script>
+    // Configure sql.js wasm location for GeoPackage
+    if (window.GeoPackage && typeof window.GeoPackage.setSqljsWasmLocateFile === 'function') {
+      window.GeoPackage.setSqljsWasmLocateFile(function(fileName) {
+        // Serve wasm via CDN
+        return 'https://unpkg.com/@ngageoint/geopackage@4.2.6/dist/' + fileName;
+      });
+    }
+  </script>
+  <script src="/static/js/showdown.min.js"></script>
+  
+  <!-- Configuration from Flask -->
+  <script>
+    // Configuration passed from Flask backend
+    window.APP_CONFIG = {
+      MAPBOX_ACCESS_TOKEN: "{{ config.MAPBOX_ACCESS_TOKEN or 'pk.eyJ1IjoiZXN3YXI5NiIsImEiOiJjbTVtNmhlbzUxdHdoMmtzZjl3cW8xcXNjIn0.DRhPdgWcJyQoXrjZ9GyZfg' }}",
+      LLM_PROVIDER: "openrouter",
+      ENVIRONMENT: "{{ config.get('FLASK_ENV', 'development') }}"
+    };
+    
+    // Make MAPBOX_ACCESS_TOKEN globally available for backward compatibility
+    const MAPBOX_ACCESS_TOKEN = window.APP_CONFIG.MAPBOX_ACCESS_TOKEN;
+  </script>
+  
+  <script src="/static/js/main.js"></script>
+  <script src="/static/js/socket.io.min.js"></script>
+  <script src="/static/js/chatbot.js"></script>
+
+  <script>
+    // Basic tab switching for left-panel:
+    const leftTabButtons = document.querySelectorAll(".left-panel .tab-button");
+    const leftTabContents = document.querySelectorAll(".left-panel .tab-content");
+
+    leftTabButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        leftTabButtons.forEach((b) => b.classList.remove("active"));
+        leftTabContents.forEach((c) => c.classList.remove("active"));
+        btn.classList.add("active");
+        const targetId = btn.getAttribute("data-tab");
+        document.getElementById(targetId).classList.add("active");
+      });
+    });
+
+    // Basic tab switching for right-panel:
+    const rightTabButtons = document.querySelectorAll(".right-panel .tab-button");
+    const rightTabContents = document.querySelectorAll(".right-panel .tab-content");
+
+    rightTabButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        rightTabButtons.forEach((b) => b.classList.remove("active"));
+        rightTabContents.forEach((c) => c.classList.remove("active"));
+        btn.classList.add("active");
+        const targetId = btn.getAttribute("data-tab");
+        document.getElementById(targetId).classList.add("active");
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+flask
+flask-cors
+requests
+openai
+flask-socketio
+python-dateutil
+python-dotenv
+psycopg2-binary

@@ -1,0 +1,2612 @@
+/****************************************************
+  1. Global & Body
+*****************************************************/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  font-family: "Roboto", sans-serif;
+  background: linear-gradient(135deg, #eef2f3 0%, #8e9eab 100%);
+  color: #333;
+  overflow: auto;
+}
+
+/****************************************************
+  2. Layout Structure: Header, Main Content, Status Bar
+*****************************************************/
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Ensure the body spans the full viewport */
+}
+
+/* Header remains at the top */
+.main-header {
+  flex: 0 0 auto;
+  background: linear-gradient(90deg, #005fa3, #0077d3);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 15px 30px;
+  justify-content: space-between;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.main-header::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(255,255,255,0.3);
+}
+
+/****************************************************
+  Military Markers Styles
+*****************************************************/
+.military-marker {
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.military-marker:hover {
+  transform: scale(1.1);
+  z-index: 1000;
+}
+
+.military-marker div {
+  transition: all 0.2s ease;
+}
+
+.military-marker:hover div {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.4) !important;
+  transform: scale(1.05);
+}
+
+/* Ensure Font Awesome icons are properly loaded */
+.military-marker i {
+  font-family: "Font Awesome 5 Free", "Font Awesome 5 Pro" !important;
+  font-weight: 900;
+  line-height: 1;
+}
+
+@keyframes headerGlow {
+  from { transform: scaleX(0.9); opacity: 0.6; }
+  to { transform: scaleX(1.1); opacity: 1; }
+}
+
+.banner-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.banner-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.banner-logo {
+  height: 60px;
+  width: 60px;
+  object-fit: contain;
+  transition: transform 0.4s ease;
+}
+
+.banner-logo:hover {
+  transform: scale(1.15);
+}
+
+.banner-title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  position: relative;
+}
+
+.banner-title::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 3px;
+  bottom: -5px;
+  left: 50%;
+  background-color: #ffeb3b;
+  transition: width 0.4s ease, left 0.4s ease;
+}
+
+.banner-title:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+/* Subheading under main banner title */
+.banner-subtitle {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #e6f2ff;
+  margin-top: 2px;
+}
+
+/* Toolbar in header */
+.toolbar {
+  display: flex;
+  gap: 10px;
+}
+.toolbar-btn {
+  background-color: #0077d3;
+  border: none;
+  color: #fff;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+.toolbar-btn i {
+  margin-right: 4px;
+}
+.toolbar-btn:hover {
+  background-color: #2196f3;
+  transform: scale(1.05);
+}
+
+/* Sub-header visualisation controls aligned to right */
+.editing-toolbar {
+  align-items: center;
+}
+.subheader-filters {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.subheader-filters .inline-label {
+  color: #040303;
+  font-size: 0.9rem;
+}
+.subheader-filters select,
+.subheader-filters input[type="date"] {
+  background: rgba(255,255,255,0.95);
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 0.9rem;
+}
+.subheader-filters .toolbar-btn {
+  background-color: #006bb3;
+}
+
+/* Main Content Layout */
+.main-content {
+  flex: 1 1 auto;
+  display: flex;
+  overflow: hidden;
+  background: transparent;
+}
+
+/* Status bar at the bottom */
+.status-bar {
+  flex: 0 0 40px;
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(6px);
+  border-top: 1px solid rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  font-size: 0.95rem;
+  color: #333;
+  justify-content: space-between;
+}
+
+/****************************************************
+  3. Left Panel (Tabbed)
+*****************************************************/
+.left-panel {
+  width: 280px;
+  background: rgba(255,255,255,0.9);
+  border-right: 1px solid rgba(0,0,0,0.1);
+  overflow-y: auto;
+  padding: 15px;
+  backdrop-filter: blur(4px);
+  position: relative;
+}
+
+.left-panel .tabs {
+  display: flex;
+  border-bottom: 2px solid rgba(0,0,0,0.1);
+  margin-bottom: 15px;
+}
+
+.left-panel .tab-button {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  cursor: pointer;
+  background: transparent;
+  color: #555;
+  font-weight: 500;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.left-panel .tab-button.active {
+  color: #0077d3;
+  border-bottom: 3px solid #0077d3;
+}
+
+.left-panel .tab-button:hover {
+  color: #005fa3;
+}
+
+/* Tab content is hidden by default */
+.left-panel .tab-content {
+  display: none;
+}
+.left-panel .tab-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.left-panel h2,
+.left-panel h3 {
+  text-align: center;
+  margin-bottom: 12px;
+  color: #0077d3;
+}
+
+.scroll-box {
+  max-height: 400px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 8px;
+  padding: 10px;
+  background: #fdfdfd;
+}
+
+.scroll-box::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scroll-box::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+#layer-search {
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 25px;
+  font-size: 0.95rem;
+}
+
+.left-panel ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 10px;
+}
+
+.left-panel ul li {
+  display: flex;
+  align-items: center;
+  background: #f7f9fc;
+  margin-bottom: 8px;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.left-panel ul li:hover {
+  background: #e2eaf3;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.selected-check {
+  margin-right: 10px;
+  color: #0077d3;
+  font-weight: bold;
+  display: none;
+}
+
+.layer-selected .selected-check {
+  display: inline;
+}
+
+.layer-selected {
+  background-color: #d0e7ff;
+}
+
+.attribute-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.attribute-name, .attribute-type {
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 4px;
+  padding: 8px;
+  background: #fff;
+}
+
+.attribute-name { flex: 2; }
+.attribute-type { flex: 1; }
+
+.remove-attribute-btn {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.remove-attribute-btn:hover {
+  background: #c0392b;
+}
+
+/* 
+  Additional styling for "Data Tools" (#data-tab)
+  and "Queries" (#queries-tab)
+  to make them stand out
+*/
+#data-tab,
+#queries-tab {
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+#data-tab > h2,
+#queries-tab > h2 {
+  margin-top: 0;
+  color: #333;
+  font-size: 1.3rem;
+  font-weight: 600;
+  text-align: left;
+  margin-bottom: 15px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Styling for the Queries Section inside Layers Tab */
+#queries-section {
+  margin-top: 20px; /* Add some spacing below the Layers content */
+}
+
+#queries-section h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 6px;
+  text-align: center;
+}
+
+#queries-section select,
+#queries-section input {
+  width: calc(100% - 12px); /* Match the width of other inputs */
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 25px;
+}
+
+#queries-section button {
+  background: linear-gradient(90deg, #0073e6, #005fa3);
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  margin-right: 8px;
+  margin-bottom: 12px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+#queries-section button i {
+  margin-right: 6px;
+  font-size: 1rem;
+}
+
+#queries-section button:hover {
+  background: linear-gradient(90deg, #005fa3, #004a80);
+  transform: translateY(-2px);
+}
+
+/* Styling for the KML/KMZ File Loader Section */
+#kml-loader {
+  background-color: rgba(255,255,255,0.95);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 8px;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+#kml-loader h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 12px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 6px;
+}
+
+#kml-loader input[type="file"] {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 25px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+#kml-loader input[type="file"]:hover {
+  border-color: #0073e6;
+  box-shadow: 0 0 5px rgba(0, 115, 230, 0.5);
+}
+
+#kml-loader input[type="file"]:focus {
+  outline: none;
+  border-color: #005fa3;
+  box-shadow: 0 0 5px rgba(0, 95, 163, 0.8);
+}
+
+#load-kml-btn {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(90deg, #0073e6, #005fa3);
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+#load-kml-btn i {
+  margin-right: 8px;
+  font-size: 1rem;
+}
+
+#load-kml-btn:hover {
+  background: linear-gradient(90deg, #005fa3, #004a80);
+  transform: translateY(-2px);
+}
+
+#kml-status {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 8px;
+  text-align: center;
+}
+
+/****************************************************
+  4. Map Container (Center)
+*****************************************************/
+.map-container {
+  flex: 1;
+  display: flex;
+  position: relative; /* so floating tools can anchor if needed */
+}
+#map {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/****************************************************
+  5. Right Panel (Tabbed)
+*****************************************************/
+.right-panel {
+  width: 280px;
+  background: rgba(255,255,255,0.9);
+  border-left: 1px solid rgba(0,0,0,0.1);
+  overflow-y: auto;
+  padding: 15px;
+  backdrop-filter: blur(4px);
+}
+
+.right-panel .tabs {
+  display: flex;
+  border-bottom: 2px solid rgba(0,0,0,0.1);
+  margin-bottom: 15px;
+}
+
+.right-panel .tab-button {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  cursor: pointer;
+  background: transparent;
+  color: #555;
+  font-weight: 500;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.right-panel .tab-button.active {
+  color: #0077d3;
+  border-bottom: 3px solid #0077d3;
+}
+
+.right-panel .tab-button:hover {
+  color: #e5f64c;
+}
+
+.right-panel .tab-content {
+  display: none;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.right-panel .tab-content.active {
+  display: block;
+}
+
+.right-panel h3 {
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+  color: #0077d3;
+}
+
+.right-panel ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 10px;
+}
+
+.right-panel ul li {
+  background: #f7f9fc;
+  margin-bottom: 8px;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.right-panel ul li:hover {
+  background: #e2eaf3;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.right-panel input[type="text"],
+.right-panel select {
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 25px;
+}
+
+.right-panel button {
+  width: 100%;
+  background: linear-gradient(90deg, #0073e6, #005fa3);
+  color: #fff;
+  padding: 10px;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background-color 0.3s, transform 0.3s;
+  margin-bottom: 12px;
+}
+
+.right-panel button:hover {
+  background: linear-gradient(90deg, #005fa3, #004a80);
+  transform: translateY(-2px);
+}
+
+.legend-swatch {
+  display: inline-block;
+  width: 20px;
+  height: 12px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/****************************************************
+  6. Floating Panels (Measurement, Legend, Info, etc.)
+*****************************************************/
+.legend-panel {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  background-color: #fff;
+  border-radius: 6px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  padding: 15px;
+  z-index: 9999;
+  display: none; /* toggled with JS if needed */
+}
+.legend-panel h3 {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Measurement Toolbox floating */
+.measure-toolbox {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  background-color: rgba(255,255,255,0.9);
+  padding: 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  display: none; /* toggled with JS */
+}
+.measure-toolbox button {
+  background-color: #0073e6;
+  border: none;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.3s, transform 0.3s;
+  margin-right: 6px;
+}
+.measure-toolbox button:hover {
+  background-color: #2196f3;
+  transform: scale(1.05);
+}
+
+/* Leaflet Draw overrides to reduce vertex size */
+.leaflet-draw-edit-edit .leaflet-edit-move,
+.leaflet-draw-edit-edit .leaflet-edit-resize {
+  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  margin-left: -4px;
+  margin-top: -4px;
+  background: #fff;
+  border: 2px solid #333;
+}
+.leaflet-draw-edit-edit .leaflet-edit-vertex {
+  width: 8px;
+  height: 8px;
+  margin-left: -4px;
+  margin-top: -4px;
+  border-radius: 50%;
+  background: #ffeb3b;
+  border: 2px solid #000;
+}
+
+/* Floating Info Panel */
+.info-panel {
+  position: absolute;
+  top: 100px;
+  left: 70%;
+  transform: translateX(-50%);
+  width: 300px;
+  max-height: 300px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 12px;
+  z-index: 9999;
+  display: none; /* hidden by default; can be toggled via JS */
+  overflow-y: auto;
+  border: 1px solid #ddd;
+}
+.info-panel h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  text-align: center;
+  color: #0073e6;
+}
+.info-panel .close-info-panel {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.2rem;
+  color: #666;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+.info-panel .close-info-panel:hover {
+  color: #0073e6;
+}
+.info-panel table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.info-panel table tr td {
+  padding: 6px;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+.info-panel table tr td:first-child {
+  font-weight: 500;
+  color: #444;
+}
+.info-panel table tr td:last-child {
+  color: #555;
+}
+
+/****************************************************
+  7. Coordinate Display (Status Bar)
+*****************************************************/
+.coordinate-display {
+  margin-left: auto;
+  font-size: 0.9rem;
+  color: #080000;
+}
+
+/****************************************************
+  8. Responsive Tweaks
+*****************************************************/
+/* AI Insights Button */
+.ai-insights-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.ai-insights-btn:hover {
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* AI Insights Modal */
+.modal {
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  padding: 0;
+  border: none;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 900px;
+  max-height: calc(100vh - 40px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+  animation: modalSlideIn 0.3s ease-out;
+  overflow: hidden;
+  margin: auto;
+  position: relative;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 24px 30px;
+  border-radius: 16px 16px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.modal-header h2 i {
+  font-size: 1.4rem;
+}
+
+.close {
+  color: white;
+  font-size: 32px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 8px;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.modal-body {
+  padding: 30px;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+  background-color: #f8f9fa;
+}
+
+.loading-spinner {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+}
+
+.loading-spinner i {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.insights-content {
+  color: #2c3e50;
+}
+
+.insight-section {
+  margin-bottom: 24px;
+  padding: 0;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: 1px solid #e9ecef;
+}
+
+.insight-section h3 {
+  margin: 0;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.insight-section h3 i {
+  font-size: 1.1rem;
+}
+
+.insight-item {
+  margin: 0;
+  padding: 20px 24px;
+  background: #ffffff;
+  border-radius: 0;
+  border-left: none;
+  border-bottom: 1px solid #f1f3f4;
+  transition: background-color 0.2s ease;
+}
+
+.insight-item:last-child {
+  border-bottom: none;
+}
+
+.insight-item:hover {
+  background-color: #f8f9fa;
+}
+
+.insight-item h4 {
+  margin: 0 0 12px 0;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.insight-item p {
+  margin: 0 0 8px 0;
+  color: #5a6c7d;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.insight-item small {
+  color: #8e9aaf;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: inline-block;
+  background: #f1f3f4;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-top: 8px;
+}
+
+.anomaly-item {
+  border-left: 4px solid #ff6b6b;
+}
+
+.anomaly-item h4 {
+  color: #d63031;
+}
+
+.pattern-item {
+  border-left: 4px solid #4ecdc4;
+}
+
+.pattern-item h4 {
+  color: #00b894;
+}
+
+.trend-item {
+  border-left: 4px solid #45b7d1;
+}
+
+.trend-item h4 {
+  color: #0984e3;
+}
+
+/* Enhanced styling for confidence and severity indicators */
+.insight-item small.confidence {
+  background: linear-gradient(135deg, #00b894, #00cec9);
+  color: white;
+}
+
+.insight-item small.severity-high {
+  background: linear-gradient(135deg, #d63031, #e17055);
+  color: white;
+}
+
+.insight-item small.severity-medium {
+  background: linear-gradient(135deg, #fdcb6e, #e17055);
+  color: white;
+}
+
+.insight-item small.severity-low {
+  background: linear-gradient(135deg, #00b894, #00cec9);
+  color: white;
+}
+
+.insight-item small.trend-upward {
+  background: linear-gradient(135deg, #0984e3, #74b9ff);
+  color: white;
+}
+
+.insight-item small.trend-downward {
+  background: linear-gradient(135deg, #d63031, #e17055);
+  color: white;
+}
+
+.insight-item small.trend-stable {
+  background: linear-gradient(135deg, #636e72, #b2bec3);
+  color: white;
+}
+
+/* Empty state styling */
+.insight-section.empty-state {
+  text-align: center;
+  padding: 40px 24px;
+}
+
+.insight-section.empty-state h3 {
+  background: linear-gradient(135deg, #636e72, #b2bec3);
+}
+
+.insight-section.empty-state .insight-item {
+  border: none;
+  background: #f8f9fa;
+}
+
+.insight-section.empty-state .insight-item p {
+  color: #636e72;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .left-panel {
+    width: 200px;
+  }
+  .right-panel {
+    width: 200px;
+  }
+  .banner-title {
+    font-size: 1.2rem;
+  }
+  .legend-panel {
+    width: 90%;
+    left: 5%;
+    transform: none;
+  }
+  .measure-toolbox {
+    width: 90%;
+    left: 5%;
+    transform: none;
+    justify-content: space-around;
+  }
+  
+  .modal-content {
+    width: 95%;
+    margin: 10% auto;
+  }
+  
+  .modal-body {
+    padding: 20px;
+  }
+}
+
+/****************************************************
+  9. Suggestions List (Autocomplete)
+*****************************************************/
+.suggestions-list {
+  position: absolute;
+  z-index: 1000;
+  background: white;
+  border: 1px solid #ccc;
+  max-height: 150px;
+  overflow-y: auto;
+  width: 95%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+.suggestion-item {
+  padding: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.suggestion-item:hover {
+  background-color: #f0f0f0;
+}
+
+#directions-tab .suggestions-list {
+  width: 90%;
+  max-height: 120px;
+}
+
+/****************************************************
+  10. Convert Modal
+*****************************************************/
+#convert-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  background-color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  z-index: 1000;
+  display: none; /* toggled with JS */
+}
+#convert-modal h3 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  text-align: center;
+  color: #0073e6;
+  margin-bottom: 15px;
+}
+#convert-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+#convert-modal input[type="file"] {
+  font-size: 0.9rem;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+#convert-modal button {
+  padding: 10px 15px;
+  font-size: 1rem;
+  background-color: #0073e6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+#convert-modal button:hover {
+  background-color: #005fa3;
+  transform: scale(1.05);
+}
+
+/* Optional Overlay */
+#modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: none; /* toggled with JS */
+}
+
+/****************************************************
+  1. Data Tools Tab General Styling
+*****************************************************/
+#data-tab {
+  padding: 10px;
+  overflow-y: auto;
+}
+
+#data-tab h2 {
+  margin-top: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 6px;
+  margin-bottom: 15px;
+}
+
+#data-tab section {
+  background-color: #fdfdfd;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+}
+
+#data-tab section h3 {
+  margin-top: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 4px;
+}
+
+/****************************************************
+  2. Import Layers Section
+*****************************************************/
+#import-layers-section input[type="file"] {
+  margin-bottom: 10px;
+}
+#import-layers-section .small-hint {
+  font-size: 0.7rem;
+  color: #666;
+  margin-top: 4px;
+}
+#import-layers-section .search-btn {
+  background-color: #0073e6;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s, transform 0.3s;
+}
+#import-layers-section .search-btn:hover {
+  background-color: #0084ff;
+  transform: scale(1.05);
+}
+
+/****************************************************
+  3. Advanced Vector Layer Tools
+*****************************************************/
+#advanced-vector-layer-tools .search-btn {
+  background-color: #5c9ee0;
+  border: none;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s, transform 0.3s;
+}
+#advanced-vector-layer-tools .search-btn:hover {
+  background-color: #71b0f1;
+  transform: scale(1.05);
+}
+
+/****************************************************
+  4. Coordinate Search Section
+*****************************************************/
+#coordinate-search {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+#coordinate-search label {
+  font-weight: 500;
+  color: #444;
+  margin-right: 2px;
+  margin-bottom: 0;
+}
+#coordinate-search input[type="number"] {
+  width: 80px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 6px;
+  font-size: 0.9rem;
+}
+#go-coordinates-btn {
+  background-color: #0073e6;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.3s, transform 0.3s;
+}
+#go-coordinates-btn:hover {
+  background-color: #0084ff;
+  transform: scale(1.05);
+}
+
+/****************************************************
+  5. Layer Management Panel
+*****************************************************/
+#layer-management-panel p {
+  font-size: 0.9rem;
+  color: #444;
+}
+#layer-management-panel ul#layer-list-management {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 8px;
+}
+#layer-management-panel ul#layer-list-management li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 6px 8px;
+  transition: background-color 0.3s;
+}
+#layer-management-panel ul#layer-list-management li:hover {
+  background-color: #f2f2f2;
+}
+#layer-management-panel ul#layer-list-management li input[type="checkbox"] {
+  margin-right: 8px;
+  cursor: pointer;
+}
+#layer-management-panel ul#layer-list-management li .layer-name {
+  flex: 1;
+  font-size: 0.9rem;
+  color: #333;
+}
+#layer-management-panel ul#layer-list-management li .layer-options-btn {
+  background: #ccc;
+  color: #333;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  margin-left: 8px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+#layer-management-panel ul#layer-list-management li .layer-options-btn:hover {
+  background-color: #bbb;
+  transform: scale(1.05);
+}
+
+#export-zip-btn {
+  background-color: #0073e6;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s, transform 0.3s;
+  margin-top: 8px;
+}
+#export-zip-btn:hover {
+  background-color: #0084ff;
+  transform: scale(1.05);
+}
+
+/****************************************************
+  6. Advanced Layer Modal Styling (No Storage Type)
+*****************************************************/
+#advanced-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9998;
+  display: none;
+}
+
+#advanced-layer-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px; 
+  max-height: 80vh; 
+  overflow-y: auto;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  padding: 20px;
+  /* Increased z-index to ensure it overlays other elements */
+  z-index: 99999;
+  display: none;
+}
+
+#advanced-layer-modal h2 {
+  margin-top: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+
+#advanced-layer-modal label {
+  display: block;
+  margin: 10px 0 4px;
+  font-weight: 500;
+  color: #444;
+}
+#advanced-layer-modal input[type="text"],
+#advanced-layer-modal select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#advanced-fields-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+}
+#advanced-fields-table th,
+#advanced-fields-table td {
+  border: 1px solid #ddd;
+  padding: 6px 8px;
+  font-size: 0.9rem;
+  text-align: left;
+}
+#advanced-fields-table th {
+  background-color: #f2f2f2;
+  font-weight: 600;
+}
+
+#advanced-layer-modal .search-btn {
+  background-color: #0073e6;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s, transform 0.3s;
+  margin-right: 8px;
+  margin-top: 6px;
+}
+#advanced-layer-modal .search-btn:hover {
+  background-color: #0084ff;
+  transform: scale(1.03);
+}
+#close-advanced-layer-modal {
+  background-color: #aaa;
+}
+#close-advanced-layer-modal:hover {
+  background-color: #999;
+}
+
+/****************************************************
+  7. Buttons (General)
+*****************************************************/
+.search-btn, .toolbar-btn {
+  font-size: 0.9rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+/****************************************************
+  8. Save Entire Project (Header Button)
+*****************************************************/
+#save-project-btn {
+  background-color: #0077d3;
+  color: #fff;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 4px;
+  margin-left: 10px;
+}
+#save-project-btn:hover {
+  background-color: #2196f3;
+  transform: scale(1.05);
+}
+
+/*****************************************************
+ * 1) Custom Context Menu for the Three-Dots Icon
+ *****************************************************/
+.context-menu {
+  position: absolute;
+  /* Increased z-index to stay on top of all content */
+  z-index: 99999;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-width: 160px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  font-size: 0.95rem;
+}
+.context-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+}
+.context-menu li {
+  padding: 8px 12px;
+  cursor: pointer;
+  color: #333;
+  transition: background-color 0.2s;
+}
+.context-menu li:hover {
+  background-color: #f2f2f2;
+}
+
+/*****************************************************
+ * 2) Feature Attribute Modal (centered on screen)
+ *****************************************************/
+#feature-attribute-modal {
+  position: fixed;
+  z-index: 9999;
+  width: 400px;
+  max-height: 70vh;
+  overflow-y: auto;
+  background-color: #fff;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  padding: 20px;
+  display: none;
+}
+
+#feature-attribute-modal h2 {
+  margin: 0 0 10px;
+  font-size: 1.2rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+
+#feature-attr-form {
+  margin-top: 10px;
+}
+
+#feature-attr-form label {
+  display: block;
+  margin: 8px 0 4px;
+  font-weight: 500;
+  color: #444;
+}
+#feature-attr-form input[type="text"],
+#feature-attr-form input[type="number"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+#feature-attr-save-btn,
+#feature-attr-cancel-btn {
+  background-color: #0073e6;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s, transform 0.3s;
+  margin-right: 8px;
+  margin-top: 6px;
+}
+#feature-attr-save-btn:hover,
+#feature-attr-cancel-btn:hover {
+  background-color: #0084ff;
+  transform: scale(1.03);
+}
+#feature-attr-cancel-btn {
+  background-color: #aaa;
+}
+#feature-attr-cancel-btn:hover {
+  background-color: #999;
+}
+
+/****************************************************
+  Basemap UI Enhancements
+*****************************************************/
+#basemaps-tab ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#basemaps-tab ul li {
+  padding: 12px 16px;
+  margin: 4px 0;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+  color: #495057;
+  position: relative;
+  overflow: hidden;
+}
+
+#basemaps-tab ul li::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transition: left 0.5s;
+}
+
+#basemaps-tab ul li:hover {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  border-color: #2196f3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+  color: #1976d2;
+}
+
+#basemaps-tab ul li:hover::before {
+  left: 100%;
+}
+
+#basemaps-tab ul li.active {
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+  border-color: #1565c0;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(33, 150, 243, 0.4);
+}
+
+#basemaps-tab ul li.active::after {
+  content: '✓';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: bold;
+  font-size: 16px;
+}
+
+#basemaps-tab ul li:active {
+  transform: translateY(0);
+  transition: transform 0.1s;
+}
+
+/* Loading indicator for basemap tiles */
+.basemap-loading {
+  position: relative;
+}
+
+.basemap-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #2196f3;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: translateY(-50%) rotate(0deg); }
+  100% { transform: translateY(-50%) rotate(360deg); }
+}
+
+/* Smooth tile transitions */
+.leaflet-tile-container {
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Optimize tile loading performance */
+.leaflet-tile {
+  transition: opacity 0.2s ease-in-out;
+}
+
+.leaflet-tile-loaded {
+  opacity: 1;
+}
+
+/* Error tile styling */
+.leaflet-tile-error {
+  background: linear-gradient(45deg, #ffebee 25%, transparent 25%), 
+              linear-gradient(-45deg, #ffebee 25%, transparent 25%), 
+              linear-gradient(45deg, transparent 75%, #ffebee 75%), 
+              linear-gradient(-45deg, transparent 75%, #ffebee 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  opacity: 0.5;
+}
+
+/* Generic modal styling for new forms */
+#sitrep-modal,
+#import-layer-modal,
+#airsp-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  padding: 20px;
+  z-index: 99999;
+  display: none;
+}
+#sitrep-modal h2,
+#import-layer-modal h2,
+#airsp-modal h2 {
+  margin-top: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+
+/* Form grid for elegant alignment */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.form-grid label {
+  align-self: center;
+  font-weight: 500;
+  color: #444;
+}
+.form-grid input[type="text"],
+.form-grid input[type="number"],
+.form-grid select,
+.form-grid textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fdfdfd;
+}
+.form-grid textarea {
+  grid-column: 1 / -1; /* make description span full width */
+}
+
+/* Modal actions */
+.modal-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.modal-actions .search-btn {
+  background: linear-gradient(90deg, #0073e6, #005fa3);
+  color: #fff;
+}
+
+/* Shortcut section styling in Layers tab */
+#import-layers-shortcut {
+  background-color: rgba(255,255,255,0.95);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 15px;
+}
+#import-layers-shortcut h3 { margin-top: 0; }
+
+/* Table of Contents categories */
+#layer-list .toc-category {
+  display: block;
+  background: transparent;
+  margin-bottom: 12px;
+}
+#layer-list .toc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #f1f5fb;
+  color: #1f2d3d;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+#layer-list .toc-header:hover { background: #e6edf7; }
+#layer-list .toc-title { font-size: 0.98rem; }
+#layer-list .toc-list {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 8px;
+  display: none;
+}
+#layer-list .toc-category.expanded .toc-list {
+  display: block;
+}
+#layer-list .toc-list > li.layer-control-button {
+  margin-bottom: 8px;
+}
+
+/* User Layers Section Styling */
+#user-layer-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#user-layer-list .user-layer-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f7f9fc;
+  margin-bottom: 8px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border-left: 4px solid #0077d3;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#user-layer-list .user-layer-item:hover {
+  background: #e2eaf3;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transform: translateX(2px);
+}
+
+#user-layer-list .user-layer-item.visible {
+  background: #d0e7ff;
+  border-left-color: #005fa3;
+}
+
+#user-layer-list .user-layer-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+#user-layer-list .user-layer-name {
+  font-weight: 500;
+  color: #1f2d3d;
+  margin-left: 8px;
+  font-size: 0.95rem;
+}
+
+#user-layer-list .user-layer-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#user-layer-list .user-layer-toggle {
+  background: none;
+  border: none;
+  color: #0077d3;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+#user-layer-list .user-layer-toggle:hover {
+  background: rgba(0, 119, 211, 0.1);
+  transform: scale(1.1);
+}
+
+#user-layer-list .user-layer-remove {
+  background: none;
+  border: none;
+  color: #dc3545;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+#user-layer-list .user-layer-remove:hover {
+  background: rgba(220, 53, 69, 0.1);
+  transform: scale(1.1);
+}
+
+/* Empty state for User Layers */
+#user-layer-list .empty-state {
+  text-align: center;
+  padding: 20px;
+  color: #6c757d;
+  font-style: italic;
+  font-size: 0.9rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 2px dashed #dee2e6;
+}
+
+/* User Layers section header styling */
+.user-layers-header {
+  background: #e8f4fd;
+  border-left: 4px solid #0077d3;
+}
+
+/* Infra emoji-based icons */
+.infra-div-icon .infra-emoji {
+  font-size: 28px;
+  line-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.right-panel input[type="text"],
+.right-panel select {
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 25px;
+}
+
+.right-panel button {
+  width: 100%;
+  background: linear-gradient(90deg, #0073e6, #005fa3);
+  color: #fff;
+  padding: 10px;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background-color 0.3s, transform 0.3s;
+  margin-bottom: 12px;
+}
+
+.right-panel button:hover {
+  background: linear-gradient(90deg, #005fa3, #004a80);
+  transform: translateY(-2px);
+}
+
+.legend-swatch {
+  display: inline-block;
+  width: 20px;
+  height: 12px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/****************************************************
+  6. Floating Panels (Measurement, Legend, Info, etc.)
+*****************************************************/
+.legend-panel {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  background-color: #fff;
+  border-radius: 6px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  padding: 15px;
+  z-index: 9999;
+  display: none; /* toggled with JS if needed */
+}
+.legend-panel h3 {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Measurement Toolbox floating */
+.measure-toolbox {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  background-color: rgba(255,255,255,0.9);
+  padding: 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  display: none; /* toggled with JS */
+}
+.measure-toolbox button {
+  background-color: #0073e6;
+  border: none;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.3s, transform 0.3s;
+  margin-right: 6px;
+}
+.measure-toolbox button:hover {
+  background-color: #2196f3;
+  transform: scale(1.05);
+}
+
+/* Leaflet Draw overrides to reduce vertex size */
+.leaflet-draw-edit-edit .leaflet-edit-move,
+.leaflet-draw-edit-edit .leaflet-edit-resize {
+  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  margin-left: -4px;
+  margin-top: -4px;
+  background: #fff;
+  border: 2px solid #333;
+}
+.leaflet-draw-edit-edit .leaflet-edit-vertex {
+  width: 8px;
+  height: 8px;
+  margin-left: -4px;
+  margin-top: -4px;
+  border-radius: 50%;
+  background: #ffeb3b;
+  border: 2px solid #000;
+}
+
+/* Floating Info Panel */
+.info-panel {
+  position: absolute;
+  top: 100px;
+  left: 70%;
+  transform: translateX(-50%);
+  width: 300px;
+  max-height: 300px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 12px;
+  z-index: 9999;
+  display: none; /* hidden by default; can be toggled via JS */
+  overflow-y: auto;
+  border: 1px solid #ddd;
+}
+.info-panel h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  text-align: center;
+  color: #0073e6;
+}
+.info-panel .close-info-panel {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.2rem;
+  color: #666;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+.info-panel .close-info-panel:hover {
+  color: #0073e6;
+}
+.info-panel table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.info-panel table tr td {
+  padding: 6px;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+.info-panel table tr td:first-child {
+  font-weight: 500;
+  color: #444;
+}
+.info-panel table tr td:last-child {
+  color: #555;
+}
+
+/****************************************************
+  7. Coordinate Display (Status Bar)
+*****************************************************/
+.coordinate-display {
+  margin-left: auto;
+  font-size: 0.9rem;
+  color: #080000;
+}
+
+/****************************************************
+  8. Responsive Tweaks
+*****************************************************/
+@media (max-width: 768px) {
+  .left-panel {
+    width: 200px;
+  }
+  .right-panel {
+    width: 200px;
+  }
+  .banner-title {
+    font-size: 1.2rem;
+  }
+  .legend-panel {
+    width: 90%;
+    left: 5%;
+    transform: none;
+  }
+  .measure-toolbox {
+    width: 90%;
+    left: 5%;
+    transform: none;
+    justify-content: space-around;
+  }
+}
+
+/****************************************************
+  9. Suggestions List (Autocomplete)
+*****************************************************/
+.suggestions-list {
+  position: absolute;
+  z-index: 1000;
+  background: white;
+  border: 1px solid #ccc;
+  max-height: 150px;
+  overflow-y: auto;
+  width: 95%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+.suggestion-item {
+  padding: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.suggestion-item:hover {
+  background-color: #f0f0f0;
+}
+
+#directions-tab .suggestions-list {
+  width: 90%;
+  max-height: 120px;
+}
+
+/****************************************************
+  10. Convert Modal
+*****************************************************/
+#convert-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  background-color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  z-index: 1000;
+  display: none; /* toggled with JS */
+}
+#convert-modal h3 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  text-align: center;
+  color: #0073e6;
+  margin-bottom: 15px;
+}
+#convert-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+#convert-modal input[type="file"] {
+  font-size: 0.9rem;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+#convert-modal button {
+  padding: 10px 15px;
+  font-size: 1rem;
+  background-color: #0073e6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+#convert-modal button:hover {
+  background-color: #005fa3;
+  transform: scale(1.05);
+}
+
+/* Optional Overlay */
+#modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: none; /* toggled with JS */
+}
+
+/****************************************************
+  1. Data Tools Tab General Styling
+*****************************************************/
+#data-tab {
+  padding: 10px;
+  overflow-y: auto;
+}
+
+#data-tab h2 {
+  margin-top: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 6px;
+  margin-bottom: 15px;
+}
+
+#data-tab section {
+  background-color: #fdfdfd;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+}
+
+#data-tab section h3 {
+  margin-top: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 4px;
+}
+
+/****************************************************
+  2. Import Layers Section
+*****************************************************/
+#import-layers-section input[type="file"] {
+  margin-bottom: 10px;
+}
+#import-layers-section .small-hint {
+  font-size: 0.7rem;
+  color: #666;
+  margin-top: 4px;
+}
+#import-layers-section .search-btn {
+  background-color: #0073e6;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s, transform 0.3s;
+}
+#import-layers-section .search-btn:hover {
+  background-color: #0084ff;
+  transform: scale(1.05);
+}
+
+/****************************************************
+  3. Advanced Vector Layer Tools
+*****************************************************/
+#advanced-vector-layer-tools .search-btn {
+  background-color: #5c9ee0;
+  border: none;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s, transform 0.3s;
+}
+#advanced-vector-layer-tools .search-btn:hover {
+  background-color: #71b0f1;
+  transform: scale(1.05);
+}
+
+/****************************************************
+  4. Coordinate Search Section
+*****************************************************/
+#coordinate-search {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+#coordinate-search label {
+  font-weight: 500;
+  color: #444;
+  margin-right: 2px;
+  margin-bottom: 0;
+}
+#coordinate-search input[type="number"] {
+  width: 80px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 6px;
+  font-size: 0.9rem;
+}
+#go-coordinates-btn {
+  background-color: #0073e6;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.3s, transform 0.3s;
+}
+#go-coordinates-btn:hover {
+  background-color: #0084ff;
+  transform: scale(1.05);
+}
+
+/****************************************************
+  5. Layer Management Panel
+*****************************************************/
+#layer-management-panel p {
+  font-size: 0.9rem;
+  color: #444;
+}
+#layer-management-panel ul#layer-list-management {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 8px;
+}
+#layer-management-panel ul#layer-list-management li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 6px 8px;
+  transition: background-color 0.3s;
+}
+#layer-management-panel ul#layer-list-management li:hover {
+  background-color: #f2f2f2;
+}
+#layer-management-panel ul#layer-list-management li input[type="checkbox"] {
+  margin-right: 8px;
+  cursor: pointer;
+}
+#layer-management-panel ul#layer-list-management li .layer-name {
+  flex: 1;
+  font-size: 0.9rem;
+  color: #333;
+}
+#layer-management-panel ul#layer-list-management li .layer-options-btn {
+  background: #ccc;
+  color: #333;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  margin-left: 8px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+#layer-management-panel ul#layer-list-management li .layer-options-btn:hover {
+  background-color: #bbb;
+  transform: scale(1.05);
+}
+
+#export-zip-btn {
+  background-color: #0073e6;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s, transform 0.3s;
+  margin-top: 8px;
+}
+#export-zip-btn:hover {
+  background-color: #0084ff;
+  transform: scale(1.05);
+}
+
+/****************************************************
+  6. Advanced Layer Modal Styling (No Storage Type)
+*****************************************************/
+#advanced-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9998;
+  display: none;
+}
+
+#advanced-layer-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px; 
+  max-height: 80vh; 
+  overflow-y: auto;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  padding: 20px;
+  /* Increased z-index to ensure it overlays other elements */
+  z-index: 99999;
+  display: none;
+}
+
+#advanced-layer-modal h2 {
+  margin-top: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+
+#advanced-layer-modal label {
+  display: block;
+  margin: 10px 0 4px;
+  font-weight: 500;
+  color: #444;
+}
+#advanced-layer-modal input[type="text"],
+#advanced-layer-modal select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#advanced-fields-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+}
+#advanced-fields-table th,
+#advanced-fields-table td {
+  border: 1px solid #ddd;
+  padding: 6px 8px;
+  font-size: 0.9rem;
+  text-align: left;
+}
+#advanced-fields-table th {
+  background-color: #f2f2f2;
+  font-weight: 600;
+}
+
+#advanced-layer-modal .search-btn {
+  background-color: #0073e6;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s, transform 0.3s;
+  margin-right: 8px;
+  margin-top: 6px;
+}
+#advanced-layer-modal .search-btn:hover {
+  background-color: #0084ff;
+  transform: scale(1.03);
+}
+#close-advanced-layer-modal {
+  background-color: #aaa;
+}
+#close-advanced-layer-modal:hover {
+  background-color: #999;
+}
+
+/****************************************************
+  7. Buttons (General)
+*****************************************************/
+.search-btn, .toolbar-btn {
+  font-size: 0.9rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+/****************************************************
+  8. Save Entire Project (Header Button)
+*****************************************************/
+#save-project-btn {
+  background-color: #0077d3;
+  color: #fff;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 4px;
+  margin-left: 10px;
+}
+#save-project-btn:hover {
+  background-color: #2196f3;
+  transform: scale(1.05);
+}
+
+/*****************************************************
+ * 1) Custom Context Menu for the Three-Dots Icon
+ *****************************************************/
+.context-menu {
+  position: absolute;
+  /* Increased z-index to stay on top of all content */
+  z-index: 99999;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-width: 160px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  font-size: 0.95rem;
+}
+.context-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+}
+.context-menu li {
+  padding: 8px 12px;
+  cursor: pointer;
+  color: #333;
+  transition: background-color 0.2s;
+}
+.context-menu li:hover {
+  background-color: #f2f2f2;
+}
+
+/*****************************************************
+ * 2) Feature Attribute Modal (centered on screen)
+ *****************************************************/
+#feature-attribute-modal {
+  position: fixed;
+  z-index: 9999;
+  width: 400px;
+  max-height: 70vh;
+  overflow-y: auto;
+  background-color: #fff;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  padding: 20px;
+  display: none;
+}
+
+#feature-attribute-modal h2 {
+  margin: 0 0 10px;
+  font-size: 1.2rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+
+#feature-attr-form {
+  margin-top: 10px;
+}
+
+#feature-attr-form label {
+  display: block;
+  margin: 8px 0 4px;
+  font-weight: 500;
+  color: #444;
+}
+#feature-attr-form input[type="text"],
+#feature-attr-form input[type="number"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+#feature-attr-save-btn,
+#feature-attr-cancel-btn {
+  background-color: #0073e6;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s, transform 0.3s;
+  margin-right: 8px;
+  margin-top: 6px;
+}
+#feature-attr-save-btn:hover,
+#feature-attr-cancel-btn:hover {
+  background-color: #0084ff;
+  transform: scale(1.03);
+}
+#feature-attr-cancel-btn {
+  background-color: #aaa;
+}
+#feature-attr-cancel-btn:hover {
+  background-color: #999;
+}
+

@@ -1,0 +1,12 @@
+{
+  "type": "FeatureCollection",
+  "name": "Hosp",
+  "features": [
+    { "type": "Feature", "properties": { "name": "General Hospital A", "beds": 150 }, "geometry": { "type": "Point", "coordinates": [21.5, -5.0] } },
+    { "type": "Feature", "properties": { "name": "Regional Hospital B", "beds": 80 }, "geometry": { "type": "Point", "coordinates": [17.3, -1.4] } },
+    { "type": "Feature", "properties": { "name": "Clinic C", "beds": 30 }, "geometry": { "type": "Point", "coordinates": [29.7, -7.2] } },
+    { "type": "Feature", "properties": { "name": "Specialty Hospital D", "beds": 220 }, "geometry": { "type": "Point", "coordinates": [25.6, -3.3] } },
+    { "type": "Feature", "properties": { "name": "Community Hospital E", "beds": 60 }, "geometry": { "type": "Point", "coordinates": [12.9, -0.9] } },
+    { "type": "Feature", "properties": { "name": "Clinic F", "beds": 25 }, "geometry": { "type": "Point", "coordinates": [27.0, -4.1] } }
+  ]
+}

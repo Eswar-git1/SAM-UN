@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="/static/css/styles.css" />
+  <link rel="stylesheet" href="/static/css/dashboard.css" />
+</head>
+<body class="dashboard-body">
+  <header class="main-header">
+    <div class="banner-content">
+      <img class="banner-logo" src="/static/images/UN logo.png" alt="UN Logo" />
+      <div class="banner-text">
+        <h1 class="banner-title">SAM UN</h1>
+        <div class="banner-subtitle">Situational Awareness Module for United Nations</div>
+      </div>
+    </div>
+  </header>
+  <header class="subheader">
+    <div class="subheader-filters" id="subheader-dashboard">
+      <a href="/" class="toolbar-btn home-btn"><i class="fa-solid fa-house"></i> Home</a>
+      <label for="sitrep-range" class="inline-label">Quick Range</label>
+      <select id="sitrep-range">
+        <option value="">All time</option>
+        <option value="1">Last 1 day</option>
+        <option value="7">Last 7 days</option>
+        <option value="30" selected>Last 30 days</option>
+        <option value="90">Last 90 days</option>
+      </select>
+      <label for="sitrep-from-date" class="inline-label">From</label>
+      <input type="date" id="sitrep-from-date" />
+      <label for="sitrep-to-date" class="inline-label">To</label>
+      <input type="date" id="sitrep-to-date" />
+      <label for="sitrep-sources" class="inline-label">Sources</label>
+      <select id="sitrep-sources" class="sources-select" multiple size="5">
+        <option value="own">Own</option>
+        <option value="local">Local</option>
+        <option value="rebel">Rebel</option>
+        <option value="ngo">NGO</option>
+        <option value="other">Other</option>
+      </select>
+      <button id="sitrep-filter-apply" class="toolbar-btn"><i class="fa-solid fa-filter"></i> Apply</button>
+      <button id="sitrep-filter-reset" class="toolbar-btn"><i class="fa-solid fa-eraser"></i> Reset</button>
+      <button id="ai-insights-btn" class="toolbar-btn ai-insights-btn"><i class="fa-solid fa-brain"></i> AI Insights</button>
+    </div>
+  </header>
+
+  <main class="dashboard-container">
+    <section class="kpis">
+      <div class="kpi">
+        <div class="kpi-title">Total Sitreps</div>
+        <div class="kpi-value" id="kpi-total">0</div>
+      </div>
+    </section>
+
+    <section class="charts-grid">
+      <div class="chart-card">
+        <h3>Incidents Over Time</h3>
+        <canvas id="chart-time"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>Severity Breakdown</h3>
+        <canvas id="chart-severity"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>Source Category</h3>
+        <canvas id="chart-source"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>Status</h3>
+        <canvas id="chart-status"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>Top Units</h3>
+        <canvas id="chart-units"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <!-- AI Insights Modal -->
+  <div id="ai-insights-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-brain"></i> AI Insights & Pattern Analysis</h2>
+        <span class="close" id="close-insights-modal">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div id="insights-loading" class="loading-spinner" style="display: none;">
+          <i class="fa-solid fa-spinner fa-spin"></i> Analyzing patterns and anomalies...
+        </div>
+        <div id="insights-content" class="insights-content">
+          <!-- AI insights will be populated here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/chart.js@4.5.0/dist/chart.umd.min.js"></script>
+  <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

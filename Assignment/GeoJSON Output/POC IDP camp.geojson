@@ -1,0 +1,12 @@
+{
+  "type": "FeatureCollection",
+  "name": "POC IDP camp",
+  "features": [
+    { "type": "Feature", "properties": { "name": "Camp Alpha", "capacity": 5000 }, "geometry": { "type": "Point", "coordinates": [20.3, -4.0] } },
+    { "type": "Feature", "properties": { "name": "Camp Bravo", "capacity": 3500 }, "geometry": { "type": "Point", "coordinates": [22.9, -3.1] } },
+    { "type": "Feature", "properties": { "name": "Camp Charlie", "capacity": 4200 }, "geometry": { "type": "Point", "coordinates": [25.7, -5.2] } },
+    { "type": "Feature", "properties": { "name": "Camp Delta", "capacity": 2800 }, "geometry": { "type": "Point", "coordinates": [17.6, -1.8] } },
+    { "type": "Feature", "properties": { "name": "Camp Echo", "capacity": 3100 }, "geometry": { "type": "Point", "coordinates": [28.4, -7.0] } },
+    { "type": "Feature", "properties": { "name": "Camp Foxtrot", "capacity": 2600 }, "geometry": { "type": "Point", "coordinates": [14.2, 0.1] } }
+  ]
+}

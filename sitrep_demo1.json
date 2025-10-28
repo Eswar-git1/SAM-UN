@@ -1,0 +1,13 @@
+{
+  "source": "local govt",
+  "source_category": "local",
+  "title": "Armed checkpoint reported: Route N2 at Bridge Kaziba",
+  "description": "Who: Ops South; Contact: Deputy Ops Chief +243-xxx-xxx\nWhat: checkpoint; Effect: armed group restricting movement\nWhere: Route N2 at Bridge Kaziba (lat -4.020, lon 21.790)\nWhen: Reported 07:20, Valid next 6 hours, Last update 08:10\nSeverity: No-Go\nStatus: confirmed\nConfidence: high (local govt confirmation)\nRecommended action: escort required / avoid if possible",
+  "severity": "high",
+  "status": "confirmed",
+  "unit": "Ops South",
+  "contact": "Deputy Ops Chief, +243-xxx-xxx",
+  "incident_type": "route_disruption",
+  "lat": -4.020,
+  "lon": 21.790
+}

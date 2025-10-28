@@ -1,0 +1,36 @@
+{
+  "type": "FeatureCollection",
+  "name": "Buffer Z",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {"name": "Buffer Line A","category": "Buffer Z","status": "neutral","notes": "Between Govt NW (BN1) and Rebel West (COB Alpha) around 16E"},
+      "geometry": {"type": "LineString","coordinates": [[15.80,-0.25],[15.95,-0.15],[16.10,-0.05],[16.25,0.05],[16.20,0.15],[16.05,0.12],[15.90,0.02]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"name": "Buffer Line B","category": "Buffer Z","status": "neutral","notes": "Between Govt North (BN3) and Rebel Central (COB Charlie) around 18E"},
+      "geometry": {"type": "LineString","coordinates": [[17.90,0.80],[18.05,0.88],[18.20,0.98],[18.35,1.10],[18.20,1.18],[18.05,1.14],[17.90,1.04]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"name": "Buffer Line C","category": "Buffer Z","status": "neutral","notes": "Between Govt Central (BN5) and Rebel NE (COB Echo) near 20E"},
+      "geometry": {"type": "LineString","coordinates": [[19.85,0.60],[20.00,0.66],[20.15,0.72],[20.30,0.82],[20.15,0.88],[20.00,0.84],[19.85,0.78]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"name": "Buffer Line D","category": "Buffer Z","status": "neutral","notes": "Between Govt East (BN7) and Rebel East (COB Foxtrot) ~21.5E"},
+      "geometry": {"type": "LineString","coordinates": [[21.30,0.86],[21.48,0.92],[21.66,0.98],[21.84,1.08],[21.66,1.12],[21.48,1.04],[21.30,0.95]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"name": "Buffer Line E","category": "Buffer Z","status": "neutral","notes": "Between Govt SE (BN8) and Rebel SE (COB India) near 24E"},
+      "geometry": {"type": "LineString","coordinates": [[23.85,-0.60],[24.02,-0.50],[24.20,-0.40],[24.38,-0.30],[24.20,-0.22],[24.02,-0.26],[23.85,-0.36]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"name": "Buffer Line F","category": "Buffer Z","status": "neutral","notes": "Between Govt Far East (BN9) and Rebel East Edge (COB Juliet) near 25E"},
+      "geometry": {"type": "LineString","coordinates": [[24.92,1.00],[25.10,1.10],[25.28,1.20],[25.46,1.32],[25.28,1.40],[25.10,1.35],[24.92,1.25]]}
+    }
+  ]
+}

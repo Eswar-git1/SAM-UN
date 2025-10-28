@@ -1,0 +1,12 @@
+{
+  "type": "FeatureCollection",
+  "name": "Airfd",
+  "features": [
+    { "type": "Feature", "properties": { "name": "Airfield Alpha", "runway": "2,000m" }, "geometry": { "type": "Point", "coordinates": [22.4, -3.7] } },
+    { "type": "Feature", "properties": { "name": "Airfield Bravo", "runway": "1,600m" }, "geometry": { "type": "Point", "coordinates": [24.9, -2.2] } },
+    { "type": "Feature", "properties": { "name": "Airfield Charlie", "runway": "1,200m" }, "geometry": { "type": "Point", "coordinates": [26.1, -4.8] } },
+    { "type": "Feature", "properties": { "name": "Airfield Delta", "runway": "2,400m" }, "geometry": { "type": "Point", "coordinates": [14.7, 0.3] } },
+    { "type": "Feature", "properties": { "name": "Airfield Echo", "runway": "1,800m" }, "geometry": { "type": "Point", "coordinates": [19.3, -2.1] } },
+    { "type": "Feature", "properties": { "name": "Airfield Foxtrot", "runway": "900m" }, "geometry": { "type": "Point", "coordinates": [28.2, -6.9] } }
+  ]
+}

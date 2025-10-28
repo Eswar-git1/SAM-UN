@@ -1,0 +1,63 @@
+{
+  "type": "FeatureCollection",
+  "name": "Govt Cont Area",
+  "crs": { "type": "name", "properties": { "name": "EPSG:4326" } },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "name": "Govt Area NW (BN1)", "status": "stable", "notes": "Irregular pocket around BN 1 HQ near 16E, 1N" },
+      "geometry": { "type": "Polygon", "coordinates": [[
+        [15.78, 0.78], [15.90, 0.70], [16.10, 0.68], [16.28, 0.80], [16.30, 1.00],
+        [16.22, 1.18], [16.05, 1.30], [15.88, 1.22], [15.78, 1.05], [15.78, 0.78]
+      ]] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Govt Area North (BN3)", "status": "stable", "notes": "Curved crescent around BN 3 near 18E, 2N" },
+      "geometry": { "type": "Polygon", "coordinates": [[
+        [17.78, 1.78], [17.90, 1.70], [18.10, 1.72], [18.28, 1.86], [18.30, 2.05],
+        [18.22, 2.22], [18.05, 2.32], [17.88, 2.24], [17.78, 2.05], [17.78, 1.78]
+      ]] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Govt Area Central (BN5)", "status": "stable", "notes": "Corridor near BN 5 at 20E, 0" },
+      "geometry": { "type": "Polygon", "coordinates": [[
+        [19.78, -0.18], [19.92, -0.26], [20.10, -0.22], [20.28, -0.05], [20.30, 0.15],
+        [20.20, 0.32], [20.02, 0.38], [19.86, 0.25], [19.76, 0.06], [19.78, -0.18]
+      ]] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Govt Area East (BN7)", "status": "stable", "notes": "Arc pocket near BN 7 at 22E, 1N" },
+      "geometry": { "type": "Polygon", "coordinates": [[
+        [21.78, 0.72], [21.92, 0.62], [22.12, 0.68], [22.28, 0.85], [22.32, 1.05],
+        [22.24, 1.24], [22.06, 1.32], [21.88, 1.22], [21.78, 1.02], [21.78, 0.72]
+      ]] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Govt Area SE (BN8)", "status": "stable", "notes": "Spread pocket near BN 8 at 24E, 0.5N" },
+      "geometry": { "type": "Polygon", "coordinates": [[
+        [23.78, 0.32], [23.90, 0.24], [24.10, 0.28], [24.28, 0.45], [24.32, 0.65],
+        [24.24, 0.82], [24.06, 0.90], [23.88, 0.80], [23.78, 0.60], [23.78, 0.32]
+      ]] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Govt Area Far East (BN9)", "status": "stable", "notes": "Irregular cluster near BN 9 at 25E, 2N" },
+      "geometry": { "type": "Polygon", "coordinates": [[
+        [24.78, 1.78], [24.92, 1.72], [25.12, 1.76], [25.30, 1.90], [25.34, 2.12],
+        [25.26, 2.30], [25.08, 2.36], [24.90, 2.26], [24.78, 2.06], [24.78, 1.78]
+      ]] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Govt Area NE (BN10)", "status": "stable", "notes": "Horseshoe near BN 10 at 26E, 1N" },
+      "geometry": { "type": "Polygon", "coordinates": [[
+        [25.78, 0.76], [25.90, 0.68], [26.12, 0.72], [26.30, 0.88], [26.34, 1.08],
+        [26.26, 1.26], [26.08, 1.34], [25.90, 1.24], [25.78, 1.04], [25.78, 0.76]
+      ]] }
+    }
+  ]
+}

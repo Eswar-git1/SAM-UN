@@ -1,0 +1,12 @@
+{
+  "type": "FeatureCollection",
+  "name": "Jetties",
+  "features": [
+    { "type": "Feature", "properties": { "name": "Jetty A", "berths": 4 }, "geometry": { "type": "Point", "coordinates": [16.5, -4.2] } },
+    { "type": "Feature", "properties": { "name": "Jetty B", "berths": 6 }, "geometry": { "type": "Point", "coordinates": [20.1, -1.8] } },
+    { "type": "Feature", "properties": { "name": "Jetty C", "berths": 3 }, "geometry": { "type": "Point", "coordinates": [13.8, 0.5] } },
+    { "type": "Feature", "properties": { "name": "Jetty D", "berths": 5 }, "geometry": { "type": "Point", "coordinates": [25.2, -8.7] } },
+    { "type": "Feature", "properties": { "name": "Jetty E", "berths": 2 }, "geometry": { "type": "Point", "coordinates": [18.9, -6.1] } },
+    { "type": "Feature", "properties": { "name": "Jetty F", "berths": 7 }, "geometry": { "type": "Point", "coordinates": [30.0, -2.3] } }
+  ]
+}

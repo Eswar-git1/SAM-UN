@@ -1,0 +1,91 @@
+SAM UN CHATBOT - 50 SAMPLE QUESTIONS FOR UN FORCES DIGNITARIES
+================================================================
+
+Based on the SITREP database structure and operational requirements, here are 50 different types of questions that UN forces dignitaries would likely ask the SAM UN Assistant chatbot:
+
+OPERATIONAL SECURITY & THREAT ASSESSMENT
+========================================
+1. What are all the critical severity incidents reported in the last 24 hours?
+2. Show me all confirmed armed checkpoints along Route N2 and Route RN5.
+3. Are there any ongoing security incidents near our main supply routes?
+4. What's the current threat level in the Kivu region based on recent SITREPs?
+5. List all route disruptions that are currently unresolved.
+6. Show me incidents involving armed groups in the past week.
+7. What are the high-priority security alerts from local government sources?
+8. Are there any no-go areas currently active in our area of operations?
+
+LOGISTICS & MOVEMENT COORDINATION
+=================================
+9. Which routes are currently passable for convoy movement to Goma?
+10. Show me all bridge damage reports affecting our supply lines.
+11. What alternative routes are available if Route RN5 is blocked?
+12. Are there any engineering assessments pending for damaged infrastructure?
+13. List all incidents that require escort arrangements.
+14. What's the status of flood damage repairs on major routes?
+15. Show me all movement restrictions currently in effect.
+16. Which checkpoints require special coordination procedures?
+
+UNIT STATUS & COORDINATION
+==========================
+17. What incidents has BN1 Sector reported in the last 48 hours?
+18. Show me all SITREPs from Engineering Liaison units.
+19. Which units are currently dealing with ongoing incidents?
+20. What's the contact information for Ops South regarding Route N2?
+21. List all incidents reported by COB Alpha Sector.
+22. Show me patrol reports from all battalion sectors.
+23. What units need immediate support based on recent reports?
+24. Which sectors have the highest incident reporting rates?
+
+HUMANITARIAN & CIVILIAN IMPACT
+===============================
+25. Are there any reports of civilian displacement in our area?
+26. Show me all humanitarian incidents requiring NGO coordination.
+27. What medical incidents have been reported by our units?
+28. List all incidents affecting civilian movement and safety.
+29. Are there any reports of aid convoy disruptions?
+30. Show me incidents near populated areas that need civilian protection.
+31. What humanitarian access issues are currently reported?
+32. List all incidents involving civilian casualties or injuries.
+
+INTELLIGENCE & SITUATIONAL AWARENESS
+====================================
+33. What patterns do you see in incident reporting over the past month?
+34. Show me all incidents within 10km of coordinates -4.020, 21.790.
+35. What's the frequency of route disruptions on our main supply lines?
+36. Are there any emerging threat patterns in rebel-controlled areas?
+37. Show me statistics on incident types and their resolution rates.
+38. What areas have the highest concentration of security incidents?
+39. List all unconfirmed reports that need verification.
+40. What's the average response time for incident resolution?
+
+COMMAND & CONTROL
+=================
+41. Give me a comprehensive briefing on all current operational challenges.
+42. What incidents require immediate command attention?
+43. Show me all critical incidents that are still marked as ongoing.
+44. What's the overall security posture based on recent SITREP data?
+45. List all incidents that need escalation to higher headquarters.
+46. What coordination is needed with local government authorities?
+47. Show me all incidents affecting our force protection measures.
+48. What strategic implications do current incidents present?
+
+REPORTING & DOCUMENTATION
+==========================
+49. Generate a summary report of all incidents for today's operations briefing.
+50. What key points should I highlight in my report to UN Headquarters about current security conditions?
+
+ADDITIONAL CONTEXT NOTES:
+========================
+- Questions reference actual data fields: source, source_category, incident_type, severity, status, unit, contact
+- Geographic references include actual coordinates and route names from the system
+- Severity levels: Critical, High, Medium, Low
+- Status types: reported, confirmed, ongoing, resolved
+- Source categories: own, local, rebel, ngo, other
+- Incident types include: route_disruption, checkpoint, flood_damage, armed_group_activity
+- Unit references include: BN1-BN10 Sectors, COB Alpha, Engineering Liaison, Ops South
+- Questions cover tactical, operational, and strategic levels of command interest
+- Time-sensitive queries reflect the dynamic nature of peacekeeping operations
+- Geographic queries utilize the coordinate system and location-based filtering
+- Questions demonstrate the need for both detailed and summary-level information
+
+These questions represent the types of queries that would be essential for UN forces dignitaries to maintain situational awareness, make informed decisions, and coordinate effective peacekeeping operations in a complex operational environment.
