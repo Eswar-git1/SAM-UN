@@ -117,6 +117,15 @@ def logout():
     flash('You have been logged out successfully', 'success')
     return redirect(url_for('login'))
 
+@app.route('/health')
+def health_check():
+    """Health check endpoint for Railway deployment"""
+    return jsonify({
+        "status": "healthy",
+        "message": "SAM UN application is running",
+        "version": "1.0.0"
+    }), 200
+
 @app.route('/')
 @login_required
 def index():
@@ -1759,9 +1768,19 @@ if __name__ == '__main__':
             print(f"Production configuration error: {e}")
             exit(1)
     
+    # Railway deployment configuration
+    # Railway provides PORT environment variable and expects binding to 0.0.0.0
+    port = int(os.environ.get('PORT', app.config['PORT']))
+    host = os.environ.get('HOST', '0.0.0.0')  # Always bind to 0.0.0.0 for Railway
+    
+    print(f"Starting server on {host}:{port}")
+    print(f"Debug mode: {app.config['DEBUG']}")
+    print(f"Environment: {os.environ.get('FLASK_ENV', 'development')}")
+    
     socketio.run(
         app, 
         debug=app.config['DEBUG'],
-        host=app.config['HOST'],
-        port=app.config['PORT']
+        host=host,
+        port=port,
+        allow_unsafe_werkzeug=True  # Required for Railway deployment
     )
