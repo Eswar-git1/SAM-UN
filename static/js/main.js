@@ -771,41 +771,135 @@ const GEO_NAMES_USERNAME = "eswar96";
 const searchBtn = document.getElementById("search-btn");
 searchBtn.addEventListener("click", async () => {
   const q = document.getElementById("search").value.trim();
+  const searchInput = document.getElementById("search");
+  
+  // Input validation
   if (!q) {
-    alert("Enter a location to search");
+    alert("Please enter a location to search");
+    searchInput.focus();
     return;
   }
-  const nominatimUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
-    q + " Democratic Republic of Congo"
-  )}&format=json&countrycodes=cd&bounded=1&viewbox=${CONGO_BOUNDS[0][1]},${CONGO_BOUNDS[1][0]},${CONGO_BOUNDS[1][1]},${CONGO_BOUNDS[0][0]}`;
+  
+  // Show loading state
+  const originalText = searchBtn.textContent;
+  searchBtn.textContent = "Searching...";
+  searchBtn.disabled = true;
+  searchInput.disabled = true;
+  
   try {
-    const nomRes = await fetch(nominatimUrl);
-    const nomData = await nomRes.json();
-    if (!nomData.length) {
-      alert("Location not found.");
-      return;
+    let coordinates, display_name;
+    
+    try {
+      // Try Mapbox first
+      searchBtn.textContent = "Finding Location (Mapbox)...";
+      const mapboxUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(q)}.json?access_token=${MAPBOX_ACCESS_TOKEN}&country=cd&limit=1&bbox=${CONGO_BOUNDS[0][1]},${CONGO_BOUNDS[0][0]},${CONGO_BOUNDS[1][1]},${CONGO_BOUNDS[1][0]}`;
+      
+      const mapboxRes = await fetch(mapboxUrl);
+      if (!mapboxRes.ok) {
+        throw new Error(`Mapbox API error: ${mapboxRes.status}`);
+      }
+      
+      const mapboxData = await mapboxRes.json();
+      if (!mapboxData.features || !mapboxData.features.length) {
+        throw new Error("Mapbox: Location not found");
+      }
+      
+      const [lon, lat] = mapboxData.features[0].center;
+      coordinates = [parseFloat(lat), parseFloat(lon)];
+      display_name = mapboxData.features[0].place_name;
+      
+    } catch (mapboxError) {
+      console.warn('Mapbox geocoding failed, trying Nominatim:', mapboxError.message);
+      
+      // Fallback to Nominatim
+      searchBtn.textContent = "Finding Location (Nominatim)...";
+      const nominatimUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+        q + " Democratic Republic of Congo"
+      )}&format=json&countrycodes=cd&bounded=1&viewbox=${CONGO_BOUNDS[0][1]},${CONGO_BOUNDS[1][0]},${CONGO_BOUNDS[1][1]},${CONGO_BOUNDS[0][0]}`;
+      
+      const nomRes = await fetch(nominatimUrl);
+      if (!nomRes.ok) {
+        throw new Error(`Network error: ${nomRes.status}`);
+      }
+      
+      const nomData = await nomRes.json();
+      if (!nomData.length) {
+        throw new Error("Location not found in the Democratic Republic of Congo. Please try a different search term or check the spelling.");
+      }
+      
+      const { lat, lon } = nomData[0];
+      coordinates = [parseFloat(lat), parseFloat(lon)];
+      display_name = nomData[0].display_name;
     }
-    const { lat, lon, display_name } = nomData[0];
-    map.setView([parseFloat(lat), parseFloat(lon)], 12);
-    const geoNamesUrl = `http://api.geonames.org/searchJSON?q=${encodeURIComponent(
-      q
-    )}&maxRows=1&username=${GEO_NAMES_USERNAME}`;
-    const geoRes = await fetch(geoNamesUrl);
-    const geoData = await geoRes.json();
+    
+    // Validate coordinates are within expected bounds
+    if (!isWithinCongoBounds(coordinates)) {
+      throw new Error("Found location is outside the Democratic Republic of Congo bounds.");
+    }
+    
+    // Get additional details from GeoNames
+    searchBtn.textContent = "Getting Details...";
     let popupContent = `<strong>${display_name}</strong>`;
-    if (geoData.geonames && geoData.geonames.length > 0) {
-      const place = geoData.geonames[0];
-      const { countryName, adminName1, population } = place;
-      popupContent += `<br><b>Country:</b> ${countryName || "N/A"}`;
-      popupContent += `<br><b>State/Region:</b> ${adminName1 || "N/A"}`;
-      popupContent += `<br><b>Population:</b> ${population || "N/A"}`;
-    } else {
-      popupContent += `<br><em>Additional details not found in GeoNames.</em>`;
+    
+    try {
+      const geoNamesUrl = `http://api.geonames.org/searchJSON?q=${encodeURIComponent(
+        q
+      )}&maxRows=1&username=${GEO_NAMES_USERNAME}`;
+      const geoRes = await fetch(geoNamesUrl);
+      
+      if (geoRes.ok) {
+        const geoData = await geoRes.json();
+        if (geoData.geonames && geoData.geonames.length > 0) {
+          const place = geoData.geonames[0];
+          const { countryName, adminName1, population } = place;
+          popupContent += `<br><b>Country:</b> ${countryName || "N/A"}`;
+          popupContent += `<br><b>State/Region:</b> ${adminName1 || "N/A"}`;
+          popupContent += `<br><b>Population:</b> ${population ? population.toLocaleString() : "N/A"}`;
+        } else {
+          popupContent += `<br><em>Additional details not available.</em>`;
+        }
+      } else {
+        popupContent += `<br><em>Additional details not available.</em>`;
+      }
+    } catch (geoError) {
+      console.warn("GeoNames lookup failed:", geoError);
+      popupContent += `<br><em>Additional details not available.</em>`;
     }
-    L.popup().setLatLng([parseFloat(lat), parseFloat(lon)]).setContent(popupContent).openOn(map);
-  } catch (err) {
-    console.error("Error during geocoding:", err);
-    alert("An error occurred while fetching location details. Please try again.");
+    
+    // Show location on map
+    map.setView(coordinates, 12);
+    L.popup()
+      .setLatLng(coordinates)
+      .setContent(popupContent)
+      .openOn(map);
+    
+    // Success feedback
+    searchBtn.textContent = "Location Found!";
+    setTimeout(() => {
+      searchBtn.textContent = originalText;
+    }, 2000);
+    
+  } catch (error) {
+    console.error("Geocoding error:", error);
+    let errorMessage = "Error searching for location. Please try again.";
+    
+    if (error.message.includes("not found")) {
+      errorMessage = error.message;
+    } else if (error.message.includes("bounds")) {
+      errorMessage = "The location found is outside the Democratic Republic of Congo. Please search for locations within DRC.";
+    } else if (error.message.includes("Network") || error.message.includes("fetch")) {
+      errorMessage = "Network error. Please check your internet connection and try again.";
+    }
+    
+    alert(errorMessage);
+    searchInput.focus();
+  } finally {
+    // Reset UI state
+    searchBtn.disabled = false;
+    searchInput.disabled = false;
+    if (searchBtn.textContent !== originalText && !searchBtn.textContent.includes("Location Found")) {
+      searchBtn.textContent = originalText;
+    }
   }
 });
 
@@ -1251,16 +1345,42 @@ let endMarker = null;
 let routeDetailsPopup = null;
 let disruptionCircle = null;
 let sitrepLayer = null;
-async function fetchCoordinatesFromNominatim(placeName) {
-  // Focus search on Democratic Republic of Congo
-  const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
-    placeName + " Democratic Republic of Congo"
-  )}&format=json&limit=1&countrycodes=cd&bounded=1&viewbox=${CONGO_BOUNDS[0][1]},${CONGO_BOUNDS[1][0]},${CONGO_BOUNDS[1][1]},${CONGO_BOUNDS[0][0]}`;
+async function fetchCoordinatesFromMapbox(placeName) {
+  // Use Mapbox Geocoding API with focus on Democratic Republic of Congo
+  const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(placeName)}.json?access_token=${MAPBOX_ACCESS_TOKEN}&country=cd&limit=1&bbox=${CONGO_BOUNDS[0][1]},${CONGO_BOUNDS[0][0]},${CONGO_BOUNDS[1][1]},${CONGO_BOUNDS[1][0]}`;
+  
   const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`Mapbox API error: ${res.status} ${res.statusText}`);
+  }
+  
   const data = await res.json();
-  if (!data || !data.length) throw new Error(`Place "${placeName}" not found in Democratic Republic of Congo.`);
-  const { lat, lon } = data[0];
+  if (!data.features || !data.features.length) {
+    throw new Error(`Place "${placeName}" not found in Democratic Republic of Congo.`);
+  }
+  
+  const [lon, lat] = data.features[0].center;
   return [parseFloat(lat), parseFloat(lon)];
+}
+
+// Fallback function that tries Mapbox first, then Nominatim
+async function fetchCoordinatesFromNominatim(placeName) {
+  try {
+    // Try Mapbox first
+    return await fetchCoordinatesFromMapbox(placeName);
+  } catch (mapboxError) {
+    console.warn('Mapbox geocoding failed, trying Nominatim:', mapboxError.message);
+    
+    // Fallback to Nominatim
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+      placeName + " Democratic Republic of Congo"
+    )}&format=json&limit=1&countrycodes=cd&bounded=1&viewbox=${CONGO_BOUNDS[0][1]},${CONGO_BOUNDS[1][0]},${CONGO_BOUNDS[1][1]},${CONGO_BOUNDS[0][0]}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (!data || !data.length) throw new Error(`Place "${placeName}" not found in Democratic Republic of Congo.`);
+    const { lat, lon } = data[0];
+    return [parseFloat(lat), parseFloat(lon)];
+  }
 }
 function calculateStraightLineRoute(startCoords, endCoords) {
   // Calculate straight-line distance using Haversine formula
@@ -1393,30 +1513,85 @@ function updateDisruptionProximity(currentRoutePolyline) {
 document.getElementById("route-btn").addEventListener("click", async () => {
   const startPlace = document.getElementById("start-latlng").value;
   const endPlace = document.getElementById("end-latlng").value;
+  const routeBtn = document.getElementById("route-btn");
+  
+  // Input validation
   if (!startPlace || !endPlace) {
-    alert("Please enter valid start and end places.");
+    alert("Please enter both start and end places.");
     return;
   }
+  
+  // Show loading state
+  const originalText = routeBtn.textContent;
+  routeBtn.textContent = "Calculating Route...";
+  routeBtn.disabled = true;
+  
   try {
     let startCoords, endCoords;
     const coordRegex = /^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/;
     const startMatch = startPlace.match(coordRegex);
     const endMatch = endPlace.match(coordRegex);
+    
     if (startMatch && endMatch) {
+      // Direct coordinates provided
       startCoords = [parseFloat(startMatch[1]), parseFloat(startMatch[2])];
       endCoords = [parseFloat(endMatch[1]), parseFloat(endMatch[2])];
+      
+      // Validate coordinates are within DRC bounds
+      if (!isWithinCongoBounds(startCoords) || !isWithinCongoBounds(endCoords)) {
+        throw new Error("Coordinates must be within the Democratic Republic of Congo bounds.");
+      }
     } else {
+      // Need to geocode place names
+      routeBtn.textContent = "Finding Locations...";
       [startCoords, endCoords] = await Promise.all([
         fetchCoordinatesFromNominatim(startPlace),
         fetchCoordinatesFromNominatim(endPlace),
       ]);
+      
+      if (!startCoords || !endCoords) {
+        throw new Error("Could not find one or both locations. Please check the spelling or try using coordinates.");
+      }
     }
+    
+    routeBtn.textContent = "Drawing Route...";
     const route = calculateStraightLineRoute(startCoords, endCoords);
     drawRoute(startCoords, endCoords, route);
+    
+    // Success feedback
+    routeBtn.textContent = "Route Calculated!";
+    setTimeout(() => {
+      routeBtn.textContent = originalText;
+    }, 2000);
+    
   } catch (error) {
-    alert("Error fetching route. Please try again.");
+    console.error("Route calculation error:", error);
+    let errorMessage = "Error calculating route. Please try again.";
+    
+    if (error.message.includes("bounds")) {
+      errorMessage = "Please ensure both locations are within the Democratic Republic of Congo.";
+    } else if (error.message.includes("find")) {
+      errorMessage = error.message;
+    } else if (error.message.includes("network") || error.message.includes("fetch")) {
+      errorMessage = "Network error. Please check your internet connection and try again.";
+    }
+    
+    alert(errorMessage);
+  } finally {
+    // Reset button state
+    routeBtn.disabled = false;
+    if (routeBtn.textContent !== originalText && !routeBtn.textContent.includes("Route Calculated")) {
+      routeBtn.textContent = originalText;
+    }
   }
 });
+
+// Helper function to check if coordinates are within Congo bounds
+function isWithinCongoBounds(coords) {
+  const [lat, lon] = coords;
+  return lat >= CONGO_BOUNDS[0][0] && lat <= CONGO_BOUNDS[1][0] && 
+         lon >= CONGO_BOUNDS[0][1] && lon <= CONGO_BOUNDS[1][1];
+}
 
 /********************************************************
  * 11) AUTO-SUGGESTIONS (Nominatim for DRC) 

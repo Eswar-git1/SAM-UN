@@ -142,7 +142,12 @@ def health_check():
 @app.route('/')
 @login_required
 def index():
-    return render_template('index.html', config=app.config)
+    user_info = {
+        'username': session.get('username', 'Unknown User'),
+        'role': session.get('role', 'user'),
+        'user_id': session.get('user_id')
+    }
+    return render_template('index.html', config=app.config, user=user_info)
 
 @app.route('/api/chat', methods=['POST'])
 def chat():

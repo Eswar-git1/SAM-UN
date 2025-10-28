@@ -44,6 +44,18 @@
       <button class="toolbar-btn" id="clear-btn">
         <i class="fa-solid fa-rotate-right"></i> Clear
       </button>
+      <!-- User Information -->
+      <div class="user-info">
+        <div class="user-details">
+          <span class="user-name">
+            <i class="fa-solid fa-user"></i> {{ user.username }}
+          </span>
+          <span class="user-role">{{ user.role.title() }}</span>
+        </div>
+      </div>
+      <a class="toolbar-btn logout-btn" href="/logout">
+        <i class="fa-solid fa-sign-out-alt"></i> Logout
+      </a>
     </nav>
   </header>
 
@@ -252,7 +264,7 @@
 
       <!-- ======== BASEMAPS TAB ======== -->
       <div id="basemaps-tab" class="tab-content active">
-        <h3>Base Maps (Fast-Loading)</h3>
+        <h3>Base Maps</h3>
         <ul>
           <li data-basemap="osm">OpenStreetMap</li>
           <li data-basemap="esri-aerial">ESRI Aerial</li>
@@ -264,7 +276,7 @@
 
       <!-- ======== DIRECTIONS TAB ======== -->
       <div id="directions-tab" class="tab-content">
-        <h3>Directions (Offline)</h3>
+        <h3>Directions</h3>
         <p class="small-hint">Uses straight-line routing for offline functionality</p>
         <label for="start-latlng">Start Place:</label>
         <input type="text" id="start-latlng" placeholder="Enter place in DRC" />
