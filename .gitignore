@@ -25,6 +25,13 @@ MANIFEST
 *.py
 !app.py
 
+# Exclude SQL and JSON files (not needed for deployment)
+*.sql
+*.json
+!package.json
+!vercel.json
+!railway.json
+
 # Virtual Environment (exclude for deployment)
 venv/
 env/
